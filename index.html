@@ -5,35 +5,116 @@
 
     <title>SOEditViz</title>
 
-    <script type="text/javascript" charset="UTF-8" src="lib/d3.min.js"></script>
-
-    <script type="text/javascript" charset="UTF-8">
-        d3.csv("data/3758880.csv", function (row) {
-            return {
-                PostId: parseInt(row.PostId),
-                PostTypeId: parseInt(row.PostTypeId),
-                EventId: parseInt(row.EventId),
-                Event: row.Event,
-                UserId: parseInt(row.UserId),
-                CreationDate: Date.parse(row.CreationDate)
-            }
-        }).then(function(array) {
-            array.sort(function(row1, row2) {
-                return row1.CreationDate - row2.CreationDate;
-            });
-
-            const posts = array.filter(row => row.Event === "InitialBody");
-
-            d3.select("body")
-                .selectAll("div")
-                .data(posts)
-                .enter().append("div")
-                .text(row => row.PostId + "(" + row.PostTypeId + ", " + row.CreationDate + ")");
-        }
-        );
-    </script>
+    <script src="lib/d3.js"></script>
 </head>
 <body>
+
+<script charset="UTF-8">
+    var dataPointSize = 40;
+    var circleRadius = 5;
+    var margin = {top: 40, right: 40, bottom: 40, left: 100};
+
+    d3.csv("data/3758880.csv", function (row) {
+        return {
+            PostId: parseInt(row.PostId),
+            PostTypeId: parseInt(row.PostTypeId),
+            EventId: parseInt(row.EventId),
+            Event: row.Event,
+            UserId: parseInt(row.UserId),
+            CreationDate: new Date(row.CreationDate)
+        }
+    }).then(function(data) {
+        data.sort(function(row1, row2) {
+            return row1.CreationDate - row2.CreationDate;
+        });
+
+        //var timestamps = data.map(function(row) { return row.CreationDate.toISOString().split('T')[0]; });
+
+        // retrieve posts and assign index (question has always index 0, answers index >0)
+        var posts = {};
+        data
+            .filter(function(row) {return row.Event === "InitialBody";})
+            .map(function(row) {return {
+                PostId: row.PostId,
+                PostTypeId: row.PostTypeId,
+                InitialAuthor: row.UserId,
+                CreationDate: row.CreationDate
+            }})
+            .forEach(function(post, index) {
+                post["Index"] = index;
+
+                if (post.PostTypeId === 1) {
+                    post["SOId"] = "q/" + post.PostId;
+                } else if (post.PostTypeId === 2) {
+                    post["SOId"] = "a/" + post.PostId;
+                }
+
+                posts[post.PostId] = post;
+        });
+
+        var plotData = [];
+        data.forEach(function(row, index) {
+            var xPos = index;
+            var yPos = posts[row.PostId].Index;
+            plotData.push([xPos, yPos]);
+        });
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", (data.length+1) * dataPointSize + margin.left + margin.right)
+            .attr("height", Object.keys(posts).length * dataPointSize + margin.top + margin.bottom);
+
+        var g = svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var xAxis = g.append("g");
+
+        xAxis.selectAll("a")
+            .data(Object.keys(posts))
+            .enter()
+            .append("a")
+            .attr("xlink:href",  function(post_id) {
+                return "https://stackoverflow.com/" + posts[post_id].SOId;
+            })
+            .attr("target", "_blank")
+            .append("text")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "central")
+            .attr("x", 0)
+            .attr("y", function(post_id) {
+                return posts[post_id].Index * dataPointSize;
+            })
+            .text(function(post_id) {
+                return posts[post_id].SOId;
+            });
+
+        g.selectAll("circle")
+            .data(plotData)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) {
+                return (d[0]+1) * dataPointSize;
+            })
+            .attr("cy", function(d) {
+                return d[1] * dataPointSize;
+            })
+            .attr("r", circleRadius);
+
+
+        //var width = svg.attr("width") - margin.left - margin.right;
+        //var height = svg.attr("height") - margin.top - margin.bottom;
+        //
+
+        // d3.select("body")
+        //     .selectAll("div")
+        //     .data(posts)
+        //     .enter().append("div")
+        //     .text(function(row) {
+        //         return row.PostId + "(" + row.PostTypeId + ", " + row.CreationDate + ")";
+        //     });
+        }
+    );
+</script>
 
 </body>
 </html>
