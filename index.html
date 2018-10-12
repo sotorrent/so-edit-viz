@@ -20,7 +20,7 @@
     var gridWidth = 80;
     var gridHeight = 40;
     var gridShift = 40;
-    var circleRadius = 5;
+    var circleRadius = 20;
     var margin = {top: 40, right: 40, bottom: 40, left: 100};
 
     d3.csv("data/3758880.csv", function (row) {
@@ -67,7 +67,7 @@
         data.forEach(function(row, index) {
             var xPos = index;
             var yPos = posts[row.PostId].Index;
-            coordinates.push([xPos, yPos]);
+            coordinates.push([xPos, yPos, row]);
         });
 
         // create svg element
@@ -146,7 +146,6 @@
                 }
             });
 
-        // draw data points
         function getPixelCoordinateX(coordinate) {
             return (coordinate+1) * gridWidth;
         }
@@ -154,19 +153,8 @@
             return coordinate * gridHeight;
         }
         var dataPoints = g.append("g");
-        dataPoints.selectAll("circle")
-            .data(coordinates)
-            .enter()
-            .append("circle")
-            .attr("cx", function(coordinate) {
-                return getPixelCoordinateX(coordinate[0]);
-            })
-            .attr("cy", function(coordinate) {
-                return getPixelCoordinateY(coordinate[1]);
-            })
-            .attr("r", circleRadius);
 
-        // connect data points
+        // draw polyline connecting data points
         var polyline = "";
         coordinates.forEach(function(coordinate, index) {
             if (index > 0) {
@@ -180,17 +168,26 @@
             .attr("stroke", "black")
             .attr("stroke-width", 2);
 
-        //var width = svg.attr("width") - margin.left - margin.right;
-        //var height = svg.attr("height") - margin.top - margin.bottom;
-        //
-
-        // d3.select("body")
-        //     .selectAll("div")
-        //     .data(posts)
-        //     .enter().append("div")
-        //     .text(function(row) {
-        //         return row.PostId + "(" + row.PostTypeId + ", " + row.CreationDate + ")";
-        //     });
+        // draw data points
+        dataPoints.selectAll("circle")
+            .data(coordinates)
+            .enter()
+            .append("circle")
+            .attr("cx", function(coordinate) {
+                return getPixelCoordinateX(coordinate[0]);
+            })
+            .attr("cy", function(coordinate) {
+                return getPixelCoordinateY(coordinate[1]);
+            })
+            .attr("r", circleRadius)
+            .attr("fill", function(coordinate) {
+                var row = coordinate[2];
+                if (row.PostTypeId === 1) {
+                    return "DeepSkyBlue"
+                } else {
+                    return "SteelBlue";
+                }
+            });
         }
     );
 </script>
