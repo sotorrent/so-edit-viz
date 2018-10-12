@@ -12,6 +12,10 @@
             font-size: 14px;
             font-family: sans-serif;
         }
+
+        text.event {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -21,6 +25,7 @@
     var gridHeight = 40;
     var gridShift = 40;
     var circleRadius = 20;
+    var circleStroke = 2;
     var margin = {top: 40, right: 40, bottom: 40, left: 100};
 
     d3.csv("data/3758880.csv", function (row) {
@@ -166,7 +171,7 @@
             .attr("points", polyline)
             .attr("fill", "none")
             .attr("stroke", "black")
-            .attr("stroke-width", 2);
+            .attr("stroke-width", circleStroke);
 
         // draw data points
         dataPoints.selectAll("circle")
@@ -186,6 +191,46 @@
                     return "DeepSkyBlue"
                 } else {
                     return "SteelBlue";
+                }
+            })
+            .attr("stroke", function(coordinate) {
+                var row = coordinate[2];
+                if (row.Event === "Comment") {
+                    return "SpringGreen";
+                } else {
+                    return "none";
+                }
+            })
+            .attr("stroke-width", 3);
+
+        dataPoints.selectAll("text")
+            .data(coordinates)
+            .enter()
+            .append("text")
+            .attr("text-anchor", "middle")
+            .attr("alignment-baseline", "central")
+            .attr("class", "event")
+            .attr("x", function(coordinate) {
+                return getPixelCoordinateX(coordinate[0]);
+            })
+            .attr("y", function(coordinate) {
+                return getPixelCoordinateY(coordinate[1]);
+            })
+            .text(function(coordinate) {
+                var row = coordinate[2];
+
+                if (row.Event === "InitialBody") {
+                    return "IB";
+                } else if (row.Event === "InitialTitle") {
+                    return "IT";
+                } else if (row.Event === "BodyEdit") {
+                    return "BE";
+                } else if (row.Event === "TitleEdit") {
+                    return "TE";
+                } else if (row.Event === "Comment") {
+                    return "C";
+                } else {
+                    return "X";
                 }
             });
         }
