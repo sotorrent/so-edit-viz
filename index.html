@@ -17,6 +17,22 @@
             display: block;
         }
 
+        div.header > button {
+            width: 85px;
+            height: 20px;
+            margin-left: 2px;
+            margin-right: 2px;
+        }
+
+        div.header > input {
+            width: 150px;
+        }
+
+        div.divider {
+            display: inline-block;
+            width: 20px;
+        }
+
         svg {
             margin-top: 10px;
         }
@@ -45,6 +61,9 @@
     <label for="post_id">Post ID: </label>
     <input type="number" id="post_id"/>
     <button type="button" id="load">Load</button>
+    <div class="divider"></div>
+    <button type="button" id="previous">< Previous</button>
+    <button type="button" id="next">Next ></button>
 </div>
 
 <svg></svg>
@@ -58,15 +77,77 @@
     var lineStroke = 3;
     var gridStroke = 1;
     var margin = {top: 40, right: 40, bottom: 40, left: 100};
+    var postIds = [];
+    var currentIndex = -1;
+    var loadButton = d3.select("#load");
+    var nextButton = d3.select("#next");
+    var previousButton = d3.select("#previous");
 
-    d3.select("#load")
+    // read available post ids
+    d3.csv("data/index.csv", function (row) {
+        return {
+            PostId: parseInt(row.PostId)
+        }
+    }).then(function(data) {
+        postIds = data.map(function(row) { return row.PostId; });
+
+        // configure button
+        previousButton.attr("disabled", "disabled");
+        if (postIds.length === 0) {
+            nextButton.attr("disabled", "disabled");
+        }
+    });
+
+    function updatePostId() {
+        // clear SVG
+        d3.select("svg").selectAll("*").remove();
+        // load data
+        loadCSV(postIds[currentIndex]);
+        document.getElementById("post_id").value = postIds[currentIndex];
+        // update buttons
+        if (currentIndex < postIds.length-1) {
+            nextButton.attr("disabled", null);
+        } else {
+            nextButton.attr("disabled", "disabled");
+        }
+        if (currentIndex > 0) {
+            previousButton.attr("disabled", null);
+        } else {
+            previousButton.attr("disabled", "disabled");
+        }
+    }
+
+    // register event handlers
+    loadButton
         .on("click", function() {
-            d3.select("svg").selectAll("*").remove();
-            load_csv(document.getElementById("post_id").value);
+            var postId = parseInt(document.getElementById("post_id").value);
+            var index = postIds.indexOf(postId);
+            if (index > -1) {
+                currentIndex = index;
+                updatePostId();
+            } else {
+                alert("No data for post ID found.");
+            }
         });
 
-    function load_csv(post_id) {
-        d3.csv("data/" + post_id + ".csv", function (row) {
+    nextButton
+        .on("click", function() {
+            if (currentIndex < postIds.length-1) {
+                currentIndex++;
+                updatePostId();
+            }
+        });
+
+    previousButton
+        .on("click", function() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updatePostId();
+            }
+        });
+
+    function loadCSV(postId) {
+        d3.csv("data/" + postId + ".csv", function (row) {
             return {
                 PostId: parseInt(row.PostId),
                 PostTypeId: parseInt(row.PostTypeId),
@@ -103,7 +184,7 @@
                 });
 
             // retrieve question id
-            var question_id = data.find(function(row) {return row.PostTypeId === 1;}).PostId;
+            var questionId = data.find(function(row) {return row.PostTypeId === 1;}).PostId;
 
             // retrieve timestamps for x axis
             var timestamps = data.map(function(row) { return row.CreationDate.toISOString().split('T')[0]; });
@@ -163,19 +244,19 @@
                 .data(Object.keys(posts))
                 .enter()
                 .append("a")
-                .attr("xlink:href",  function(post_id) {
-                    return "https://stackoverflow.com/" + posts[post_id].SOId;
+                .attr("xlink:href",  function(postId) {
+                    return "https://stackoverflow.com/" + posts[postId].SOId;
                 })
                 .attr("target", "_blank")
                 .append("text")
                 .attr("text-anchor", "end")
                 .attr("alignment-baseline", "central")
                 .attr("x", 0)
-                .attr("y", function(post_id) {
-                    return posts[post_id].Index * gridHeight;
+                .attr("y", function(postId) {
+                    return posts[postId].Index * gridHeight;
                 })
-                .text(function(post_id) {
-                    return posts[post_id].SOId;
+                .text(function(postId) {
+                    return posts[postId].SOId;
                 });
 
             // create x axis;
@@ -207,15 +288,15 @@
             var dataPoints = g.append("g");
 
             // draw polyline connecting data points
-            var polyline = "";
+            var polyLine = "";
             coordinates.forEach(function(coordinate, index) {
                 if (index > 0) {
-                    polyline += " ";
+                    polyLine += " ";
                 }
-                polyline += getPixelCoordinateX(coordinate[0]) + "," + getPixelCoordinateY(coordinate[1]);
+                polyLine += getPixelCoordinateX(coordinate[0]) + "," + getPixelCoordinateY(coordinate[1]);
             });
             dataPoints.append("polyline")
-                .attr("points", polyline)
+                .attr("points", polyLine)
                 .attr("fill", "none")
                 .attr("stroke", "lightgray")
                 .attr("stroke-width", lineStroke);
@@ -270,12 +351,12 @@
                         .style("opacity", 0.0);
                 });
 
-            function getCommentUrl(question_id, comment_id, post_id) {
-                return "https://stackoverflow.com/q/" + question_id + "#comment" + comment_id + "_" + post_id;
+            function getCommentUrl(questionId, commentId, postId) {
+                return "https://stackoverflow.com/q/" + questionId + "#comment" + commentId + "_" + postId;
             }
 
-            function getRevisonsUrl(post_id) {
-                return "https://stackoverflow.com/posts/" + post_id + "/revisions";
+            function getRevisonsUrl(postId) {
+                return "https://stackoverflow.com/posts/" + postId + "/revisions";
             }
 
             dataPoints.selectAll("a")
@@ -285,7 +366,7 @@
                 .attr("xlink:href",  function(coordinate) {
                     var row = coordinate[2];
                     if (row.Event === "Comment") {
-                        return getCommentUrl(question_id, row.EventId, row.PostId);
+                        return getCommentUrl(questionId, row.EventId, row.PostId);
                     } else {
                         return getRevisonsUrl(row.PostId);
                     }
@@ -320,8 +401,6 @@
                 });
         });
     }
-
-
 </script>
 
 </body>
