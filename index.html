@@ -6,11 +6,20 @@
     <title>SOEditViz</title>
 
     <script src="lib/d3.js"></script>
+
+    <style>
+        text {
+            font-size: 14px;
+            font-family: sans-serif;
+        }
+    </style>
 </head>
 <body>
 
 <script charset="UTF-8">
-    var dataPointSize = 40;
+    var gridWidth = 80;
+    var gridHeight = 40;
+    var gridShift = 40;
     var circleRadius = 5;
     var margin = {top: 40, right: 40, bottom: 40, left: 100};
 
@@ -27,8 +36,6 @@
         data.sort(function(row1, row2) {
             return row1.CreationDate - row2.CreationDate;
         });
-
-        //var timestamps = data.map(function(row) { return row.CreationDate.toISOString().split('T')[0]; });
 
         // retrieve posts and assign index (question has always index 0, answers index >0)
         var posts = {};
@@ -52,24 +59,54 @@
                 posts[post.PostId] = post;
         });
 
-        var plotData = [];
+        // retrieve timestamps for x axis
+        var timestamps = data.map(function(row) { return row.CreationDate.toISOString().split('T')[0]; });
+
+        // get x and y coordinates
+        var coordinates = [];
         data.forEach(function(row, index) {
             var xPos = index;
             var yPos = posts[row.PostId].Index;
-            plotData.push([xPos, yPos]);
+            coordinates.push([xPos, yPos]);
         });
 
+        // create svg element
+        var maxX = (data.length+1) * gridWidth;
+        var maxY = Object.keys(posts).length * gridHeight;
         var svg = d3.select("body")
             .append("svg")
-            .attr("width", (data.length+1) * dataPointSize + margin.left + margin.right)
-            .attr("height", Object.keys(posts).length * dataPointSize + margin.top + margin.bottom);
+            .attr("width", maxX + margin.left + margin.right)
+            .attr("height", maxY + margin.top + margin.bottom);
 
+        // group for drawing area
         var g = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var xAxis = g.append("g");
+        // draw grid
+        var grid = g.append("g");
+        grid.selectAll("line")
+            .data(timestamps)
+            .enter()
+            .append("line")
+            .attr("x1", function(timestamp, index) {
+                return (index+1) * gridWidth - gridShift;
+            })
+            .attr("y1", -15)
+            .attr("x2", function(timestamp, index) {
+                return (index+1) * gridWidth - gridShift;
+            })
+            .attr("y2", maxY - 10)
+            .attr("stroke", function(timestamp, index) {
+                if (index === 0 || timestamps[index] !== timestamps[index-1]) {
+                    return "LightGray";
+                } else {
+                    return "white";
+                }
+            });
 
-        xAxis.selectAll("a")
+        // create y axis
+        var yAxis = g.append("g");
+        yAxis.selectAll("a")
             .data(Object.keys(posts))
             .enter()
             .append("a")
@@ -82,21 +119,42 @@
             .attr("alignment-baseline", "central")
             .attr("x", 0)
             .attr("y", function(post_id) {
-                return posts[post_id].Index * dataPointSize;
+                return posts[post_id].Index * gridHeight;
             })
             .text(function(post_id) {
                 return posts[post_id].SOId;
             });
 
+        // create x axis;
+        var xAxis = g.append("g");
+        xAxis.selectAll("text")
+            .data(timestamps)
+            .enter()
+            .append("text")
+            .attr("text-anchor", "middle")
+            .attr("alignment-baseline", "central")
+            .attr("x", function(timestamp, index) {
+                return (index+1) * gridWidth - gridShift;
+            })
+            .attr("y", maxY)
+            .text(function(timestamp, index) {
+                if (index === 0 || timestamps[index] !== timestamps[index-1]) {
+                    return timestamp;
+                } else {
+                    return "";
+                }
+            });
+
+        // draw data points
         g.selectAll("circle")
-            .data(plotData)
+            .data(coordinates)
             .enter()
             .append("circle")
             .attr("cx", function(d) {
-                return (d[0]+1) * dataPointSize;
+                return (d[0]+1) * gridWidth;
             })
             .attr("cy", function(d) {
-                return d[1] * dataPointSize;
+                return d[1] * gridHeight;
             })
             .attr("r", circleRadius);
 
