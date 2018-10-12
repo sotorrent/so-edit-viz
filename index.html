@@ -8,12 +8,25 @@
     <script src="lib/d3.js"></script>
 
     <style>
-        text {
+        body {
             font-size: 14px;
             font-family: sans-serif;
         }
 
         text.event {
+            font-weight: bold;
+        }
+
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: 100px;
+            height: 32px;
+            padding: 2px;
+            background: lightgray;
+            border: 0;
+            border-radius: 8px;
+            pointer-events: none;
             font-weight: bold;
         }
     </style>
@@ -108,7 +121,7 @@
             .attr("y2", maxY - 10)
             .attr("stroke", function(timestamp, index) {
                 if (index === 0 || timestamps[index] !== timestamps[index-1]) {
-                    return "LightGray";
+                    return "lightgray";
                 } else {
                     return "white";
                 }
@@ -176,7 +189,7 @@
         dataPoints.append("polyline")
             .attr("points", polyline)
             .attr("fill", "none")
-            .attr("stroke", "LightGray")
+            .attr("stroke", "lightgray")
             .attr("stroke-width", lineStroke);
 
         // draw data points
@@ -194,9 +207,9 @@
             .attr("fill", function(coordinate) {
                 var row = coordinate[2];
                 if (row.Event === "Comment") {
-                    return "MediumAquaMarine ";
+                    return "mediumaquamarine ";
                 } else {
-                    return "SkyBlue";
+                    return "skyblue";
                 }
             })
             .attr("stroke", function(coordinate) {
@@ -208,13 +221,33 @@
                         return "#0F5A78";
                     }
                 } else {
-                    return "Tomato";
+                    return "tomato";
                 }
             })
-            .attr("stroke-width", circleStroke);
+            .attr("stroke-width", circleStroke)
+            .on("mouseover", function(coordinate) {
+                tooltip
+                    .transition()
+                    .duration(50)
+                    .style("opacity", 0.9);
+                tooltip
+                    .html(coordinate[2].CreationDate.toISOString().split(".000Z")[0].replace("T", " "))
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 18) + "px");
+            })
+            .on("mouseout", function() {
+                tooltip
+                    .transition()
+                    .duration(50)
+                    .style("opacity", 0.0);
+            });
 
         function getCommentUrl(question_id, comment_id, post_id) {
             return "https://stackoverflow.com/q/" + question_id + "#comment" + comment_id + "_" + post_id;
+        }
+
+        function getRevisonsUrl(post_id) {
+            return "https://stackoverflow.com/posts/" + post_id + "/revisions";
         }
 
         dataPoints.selectAll("a")
@@ -226,7 +259,7 @@
                 if (row.Event === "Comment") {
                     return getCommentUrl(question_id, row.EventId, row.PostId);
                 } else {
-                    return "";
+                    return getRevisonsUrl(row.PostId);
                 }
             })
             .attr("target", "_blank")
@@ -257,8 +290,13 @@
                     return "X";
                 }
             });
-        }
-    );
+
+        // append the tooltip div
+        var tooltip = d3.select("body")
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+    });
 </script>
 
 </body>
