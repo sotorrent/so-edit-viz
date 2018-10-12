@@ -19,7 +19,6 @@
 
         div.header > button {
             width: 85px;
-            height: 20px;
             margin-left: 2px;
             margin-right: 2px;
         }
@@ -250,7 +249,8 @@
                 .attr("target", "_blank")
                 .append("text")
                 .attr("text-anchor", "end")
-                .attr("alignment-baseline", "central")
+                .attr("alignment-baseline", "central") // Chrome
+                .attr("dominant-baseline", "central") // Firefox
                 .attr("x", 0)
                 .attr("y", function(postId) {
                     return posts[postId].Index * gridHeight;
@@ -266,7 +266,8 @@
                 .enter()
                 .append("text")
                 .attr("text-anchor", "middle")
-                .attr("alignment-baseline", "central")
+                .attr("alignment-baseline", "central") // Chrome
+                .attr("dominant-baseline", "central") // Firefox
                 .attr("x", function(timestamp, index) {
                     return (index+1) * gridWidth - horizontalGridShift;
                 })
@@ -374,7 +375,8 @@
                 .attr("target", "_blank")
                 .append("text")
                 .attr("text-anchor", "middle")
-                .attr("alignment-baseline", "central")
+                .attr("alignment-baseline", "central") // Chrome
+                .attr("dominant-baseline", "central") // Firefox
                 .attr("class", "event")
                 .attr("x", function(coordinate) {
                     return getPixelCoordinateX(coordinate[0]);
