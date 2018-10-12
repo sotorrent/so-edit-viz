@@ -22,10 +22,12 @@
 
 <script charset="UTF-8">
     var gridWidth = 80;
-    var gridHeight = 40;
-    var gridShift = 40;
+    var gridHeight = 60;
+    var horizontalGridShift = 40;
     var circleRadius = 20;
-    var circleStroke = 2;
+    var circleStroke = 3;
+    var lineStroke = 3;
+    var gridStroke = 1;
     var margin = {top: 40, right: 40, bottom: 40, left: 100};
 
     d3.csv("data/3758880.csv", function (row) {
@@ -97,11 +99,11 @@
             .enter()
             .append("line")
             .attr("x1", function(timestamp, index) {
-                return (index+1) * gridWidth - gridShift;
+                return (index+1) * gridWidth - horizontalGridShift;
             })
             .attr("y1", -15)
             .attr("x2", function(timestamp, index) {
-                return (index+1) * gridWidth - gridShift;
+                return (index+1) * gridWidth - horizontalGridShift;
             })
             .attr("y2", maxY - 10)
             .attr("stroke", function(timestamp, index) {
@@ -111,7 +113,8 @@
                     return "white";
                 }
             })
-            .attr("stroke-width", 2);
+            .attr("stroke-width", gridStroke)
+            .attr("stroke-dasharray", "8 8");
 
         // create y axis
         var yAxis = g.append("g");
@@ -143,7 +146,7 @@
             .attr("text-anchor", "middle")
             .attr("alignment-baseline", "central")
             .attr("x", function(timestamp, index) {
-                return (index+1) * gridWidth - gridShift;
+                return (index+1) * gridWidth - horizontalGridShift;
             })
             .attr("y", maxY)
             .text(function(timestamp, index) {
@@ -173,8 +176,8 @@
         dataPoints.append("polyline")
             .attr("points", polyline)
             .attr("fill", "none")
-            .attr("stroke", "black")
-            .attr("stroke-width", circleStroke);
+            .attr("stroke", "LightGray")
+            .attr("stroke-width", lineStroke);
 
         // draw data points
         dataPoints.selectAll("circle")
@@ -188,23 +191,16 @@
                 return getPixelCoordinateY(coordinate[1]);
             })
             .attr("r", circleRadius)
-            .attr("fill", function(coordinate) {
-                var row = coordinate[2];
-                if (row.PostTypeId === 1) {
-                    return "DeepSkyBlue"
-                } else {
-                    return "SteelBlue";
-                }
-            })
+            .attr("fill", "SkyBlue")
             .attr("stroke", function(coordinate) {
                 var row = coordinate[2];
                 if (row.Event === "Comment") {
-                    return "SpringGreen";
+                    return "#505050";
                 } else {
-                    return "none";
+                    return "LightGray";
                 }
             })
-            .attr("stroke-width", 3);
+            .attr("stroke-width", circleStroke);
 
         function getCommentUrl(question_id, comment_id, post_id) {
             return "https://stackoverflow.com/q/" + question_id + "#comment" + comment_id + "_" + post_id;
