@@ -64,6 +64,9 @@
                 posts[post.PostId] = post;
         });
 
+        // retrieve question id
+        var question_id = data.find(function(row) {return row.PostTypeId === 1;}).PostId;
+
         // retrieve timestamps for x axis
         var timestamps = data.map(function(row) { return row.CreationDate.toISOString().split('T')[0]; });
 
@@ -203,9 +206,23 @@
             })
             .attr("stroke-width", 3);
 
-        dataPoints.selectAll("text")
+        function getCommentUrl(question_id, comment_id, post_id) {
+            return "https://stackoverflow.com/q/" + question_id + "#comment" + comment_id + "_" + post_id;
+        }
+
+        dataPoints.selectAll("a")
             .data(coordinates)
             .enter()
+            .append("a")
+            .attr("xlink:href",  function(coordinate) {
+                var row = coordinate[2];
+                if (row.Event === "Comment") {
+                    return getCommentUrl(question_id, row.EventId, row.PostId);
+                } else {
+                    return "";
+                }
+            })
+            .attr("target", "_blank")
             .append("text")
             .attr("text-anchor", "middle")
             .attr("alignment-baseline", "central")
