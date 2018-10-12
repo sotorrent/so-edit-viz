@@ -102,7 +102,8 @@
                 } else {
                     return "white";
                 }
-            });
+            })
+            .attr("stroke-width", 2);
 
         // create y axis
         var yAxis = g.append("g");
@@ -146,18 +147,38 @@
             });
 
         // draw data points
-        g.selectAll("circle")
+        function getPixelCoordinateX(coordinate) {
+            return (coordinate+1) * gridWidth;
+        }
+        function getPixelCoordinateY(coordinate) {
+            return coordinate * gridHeight;
+        }
+        var dataPoints = g.append("g");
+        dataPoints.selectAll("circle")
             .data(coordinates)
             .enter()
             .append("circle")
-            .attr("cx", function(d) {
-                return (d[0]+1) * gridWidth;
+            .attr("cx", function(coordinate) {
+                return getPixelCoordinateX(coordinate[0]);
             })
-            .attr("cy", function(d) {
-                return d[1] * gridHeight;
+            .attr("cy", function(coordinate) {
+                return getPixelCoordinateY(coordinate[1]);
             })
             .attr("r", circleRadius);
 
+        // connect data points
+        var polyline = "";
+        coordinates.forEach(function(coordinate, index) {
+            if (index > 0) {
+                polyline += " ";
+            }
+            polyline += getPixelCoordinateX(coordinate[0]) + "," + getPixelCoordinateY(coordinate[1]);
+        });
+        dataPoints.append("polyline")
+            .attr("points", polyline)
+            .attr("fill", "none")
+            .attr("stroke", "black")
+            .attr("stroke-width", 2);
 
         //var width = svg.attr("width") - margin.left - margin.right;
         //var height = svg.attr("height") - margin.top - margin.bottom;
