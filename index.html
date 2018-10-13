@@ -68,14 +68,14 @@
 <svg></svg>
 
 <script charset="UTF-8">
-    var gridWidth = 80;
-    var gridHeight = 60;
-    var horizontalGridShift = 40;
+    var margin = {top: 40, right: 40, bottom: 40, left: 100};
     var circleRadius = 20;
     var circleStroke = 3;
     var lineStroke = 3;
     var gridStroke = 1;
-    var margin = {top: 40, right: 40, bottom: 40, left: 100};
+    var gridWidth = 80;
+    var gridHeight = (2 * circleRadius) + 10;
+    var horizontalGridShift = 40;
     var postIds = [];
     var currentIndex = -1;
     var loadButton = d3.select("#load");
@@ -125,7 +125,7 @@
                 currentIndex = index;
                 updatePostId();
             } else {
-                alert("No data for post ID found.");
+                alert("No data for post ID " + postId + " found.");
             }
         });
 
@@ -153,7 +153,7 @@
                 EventId: parseInt(row.EventId),
                 Event: row.Event,
                 UserId: parseInt(row.UserId),
-                CreationDate: new Date(row.CreationDate)
+                CreationDate: new Date(row.CreationDate.replace(" ", "T") + "Z") // make date ISO-8601-compatible
             }
         }).then(function(data) {
             data.sort(function(row1, row2) {
