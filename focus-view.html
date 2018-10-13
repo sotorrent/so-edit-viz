@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>SOEditViz</title>
+
+    <script src="lib/d3.js"></script>
+    <script src="functions.js"></script>
+</head>
+<body>
+
+<svg></svg>
+
+<script>
+    var queryParameters = [];
+    window.location.search.substr(1).split("&").forEach(function(keyValueString) {
+        var keyValue = keyValueString.split("=");
+        queryParameters[keyValue[0]] = keyValue[1];
+    });
+
+    if (!Object.keys(queryParameters).includes("postId") || !Object.keys(queryParameters).includes("eventId")) {
+        var errorMessage = "Query parameter postId or eventId is missing.";
+        alert(errorMessage);
+        throw new Error(errorMessage);
+    }
+
+    var postId = parseInt(queryParameters["postId"]);
+    var eventId = parseInt(queryParameters["eventId"]);
+
+    readCSV(postId, function(data) {
+        var event = data.find(function(row) { return row.EventId === eventId; });
+        var dateString = extractDateString(event.CreationDate);
+
+        var currentDay = new Date(dateString);
+        var previousDay = new Date(dateString);
+        previousDay.setDate(previousDay.getDate()-1); // see https://stackoverflow.com/a/5960713
+        var nextDay = new Date(dateString);
+        nextDay.setDate(nextDay.getDate()+1); // see https://stackoverflow.com/a/5960713
+
+        // TODO: draw events on previous, current, and next day using continuous time
+    });
+</script>
+
+</body>
+</html>
