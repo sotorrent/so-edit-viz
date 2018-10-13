@@ -6,6 +6,7 @@
     <title>SOEditViz</title>
 
     <script src="lib/d3.js"></script>
+    <script src="functions.js"></script>
 
     <style>
         body {
@@ -67,13 +68,13 @@
 
 <svg></svg>
 
-<script charset="UTF-8">
+<script>
     var margin = {top: 40, right: 40, bottom: 40, left: 100};
-    var circleRadius = 20;
+    var circleRadius = 18;
     var circleStroke = 3;
     var lineStroke = 3;
     var gridStroke = 1;
-    var gridWidth = 80;
+    var gridWidth = 85;
     var gridHeight = (2 * circleRadius) + 10;
     var horizontalGridShift = 40;
     var verticalGridPadding = 35;
@@ -87,7 +88,7 @@
         // clear SVG
         d3.select("svg").selectAll("*").remove();
         // load data
-        loadCSV(postIds[currentIndex]);
+        loadThread(postIds[currentIndex]);
         document.getElementById("post_id").value = postIds[currentIndex];
         // update buttons
         if (currentIndex < postIds.length-1) {
@@ -130,21 +131,8 @@
     nextButton.on("click", nextThread);
     previousButton.on("click", previousThread);
 
-    function loadCSV(postId) {
-        d3.csv("data/" + postId + ".csv", function (row) {
-            return {
-                PostId: parseInt(row.PostId),
-                PostTypeId: parseInt(row.PostTypeId),
-                EventId: parseInt(row.EventId),
-                Event: row.Event,
-                UserId: parseInt(row.UserId),
-                CreationDate: new Date(row.CreationDate.replace(" ", "T") + "Z") // make date ISO-8601-compatible
-            }
-        }).then(function(data) {
-            data.sort(function(row1, row2) {
-                return row1.CreationDate - row2.CreationDate;
-            });
-
+    function loadThread(postId) {
+        readCSV(postId, function(data) {
             // retrieve posts and assign index (question has always index 0, answers index >0)
             var posts = {};
             data
@@ -346,7 +334,7 @@
                         .duration(50)
                         .style("opacity", 0.9);
                     tooltip
-                        .html(coordinate[2].CreationDate.toISOString().split(".000Z")[0].replace("T", " "))
+                        .html(extractDateAndTimeString(coordinate[2].CreationDate))
                         .style("left", (d3.event.pageX) + "px")
                         .style("top", (d3.event.pageY - 18) + "px");
                 })
@@ -392,12 +380,10 @@
                 .text(function(coordinate) {
                     var row = coordinate[2];
 
-                    if (row.Event === "InitialBody") {
-                        return "IB";
-                    } else if (row.Event === "InitialTitle") {
-                        return "IT";
+                    if (row.Event === "InitialBody") { // includes "InitialTitle", which is ignored (see readCSV())
+                        return "I";
                     } else if (row.Event === "BodyEdit") {
-                        return "BE";
+                        return "E";
                     } else if (row.Event === "TitleEdit") {
                         return "TE";
                     } else if (row.Event === "Comment") {
