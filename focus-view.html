@@ -30,13 +30,12 @@
 
     readCSV(postId, function(data) {
         var event = data.find(function(row) { return row.EventId === eventId; });
-        var dateString = extractDateString(event.CreationDate);
 
-        var currentDay = new Date(dateString);
-        var previousDay = new Date(dateString);
-        previousDay.setDate(previousDay.getDate()-1); // see https://stackoverflow.com/a/5960713
-        var nextDay = new Date(dateString);
-        nextDay.setDate(nextDay.getDate()+1); // see https://stackoverflow.com/a/5960713
+        var currentDay = getMiddleOfDay(event.CreationDate);
+        var previousDay = getBeginningOfPreviousDay(event.CreationDate);
+        var nextDay = getEndOfNextDay(event.CreationDate);
+
+        data = data.filter(function(row) { return row.CreationDate >= previousDay && row.CreationDate <= nextDay; })
 
         // TODO: draw events on previous, current, and next day using continuous time
     });
