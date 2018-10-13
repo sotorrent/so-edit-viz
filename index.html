@@ -76,28 +76,14 @@
     var gridWidth = 80;
     var gridHeight = (2 * circleRadius) + 10;
     var horizontalGridShift = 40;
+    var verticalGridPadding = 35;
     var postIds = [];
     var currentIndex = -1;
     var loadButton = d3.select("#load");
     var nextButton = d3.select("#next");
     var previousButton = d3.select("#previous");
 
-    // read available post ids
-    d3.csv("data/index.csv", function (row) {
-        return {
-            PostId: parseInt(row.PostId)
-        }
-    }).then(function(data) {
-        postIds = data.map(function(row) { return row.PostId; });
-
-        // configure button
-        previousButton.attr("disabled", "disabled");
-        if (postIds.length === 0) {
-            nextButton.attr("disabled", "disabled");
-        }
-    });
-
-    function updatePostId() {
+    function updateThread() {
         // clear SVG
         d3.select("svg").selectAll("*").remove();
         // load data
@@ -116,34 +102,33 @@
         }
     }
 
+    function nextThread() {
+        if (currentIndex < postIds.length - 1) {
+            currentIndex++;
+            updateThread();
+        }
+    }
+
+    function previousThread() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateThread();
+        }
+    }
+
     // register event handlers
-    loadButton
-        .on("click", function() {
+    loadButton.on("click", function() {
             var postId = parseInt(document.getElementById("post_id").value);
             var index = postIds.indexOf(postId);
             if (index > -1) {
                 currentIndex = index;
-                updatePostId();
+                updateThread();
             } else {
                 alert("No data for post ID " + postId + " found.");
             }
         });
-
-    nextButton
-        .on("click", function() {
-            if (currentIndex < postIds.length-1) {
-                currentIndex++;
-                updatePostId();
-            }
-        });
-
-    previousButton
-        .on("click", function() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updatePostId();
-            }
-        });
+    nextButton.on("click", nextThread);
+    previousButton.on("click", previousThread);
 
     function loadCSV(postId) {
         d3.csv("data/" + postId + ".csv", function (row) {
@@ -197,11 +182,11 @@
             });
 
             // configure svg element
-            var maxX = (data.length+1) * gridWidth;
+            var maxX = (data.length + 1) * gridWidth;
             var maxY = Object.keys(posts).length * gridHeight;
             var svg = d3.select("svg")
                 .attr("width", maxX + margin.left + margin.right)
-                .attr("height", maxY + margin.top + margin.bottom);
+                .attr("height", maxY + gridHeight + margin.top + margin.bottom);
 
             // group for drawing area
             var g = svg.append("g")
@@ -222,11 +207,11 @@
                 .attr("x1", function(timestamp, index) {
                     return (index+1) * gridWidth - horizontalGridShift;
                 })
-                .attr("y1", -15)
+                .attr("y1", gridHeight - verticalGridPadding)
                 .attr("x2", function(timestamp, index) {
                     return (index+1) * gridWidth - horizontalGridShift;
                 })
-                .attr("y2", maxY - 10)
+                .attr("y2", maxY + verticalGridPadding)
                 .attr("stroke", function(timestamp, index) {
                     if (index === 0 || timestamps[index] !== timestamps[index-1]) {
                         return "lightgray";
@@ -253,15 +238,15 @@
                 .attr("dominant-baseline", "central") // Firefox
                 .attr("x", 0)
                 .attr("y", function(postId) {
-                    return posts[postId].Index * gridHeight;
+                    return (posts[postId].Index+1) * gridHeight;
                 })
                 .text(function(postId) {
                     return posts[postId].SOId;
                 });
 
-            // create x axis;
-            var xAxis = g.append("g");
-            xAxis.selectAll("text")
+            // create x axes;
+            var xAxisTop = g.append("g");
+            xAxisTop.selectAll("text")
                 .data(timestamps)
                 .enter()
                 .append("text")
@@ -271,7 +256,27 @@
                 .attr("x", function(timestamp, index) {
                     return (index+1) * gridWidth - horizontalGridShift;
                 })
-                .attr("y", maxY)
+                .attr("y", 0)
+                .text(function(timestamp, index) {
+                    if (index === 0 || timestamps[index] !== timestamps[index-1]) {
+                        return timestamp;
+                    } else {
+                        return "";
+                    }
+                });
+
+            var xAxisBottom = g.append("g");
+            xAxisBottom.selectAll("text")
+                .data(timestamps)
+                .enter()
+                .append("text")
+                .attr("text-anchor", "middle")
+                .attr("alignment-baseline", "central") // Chrome
+                .attr("dominant-baseline", "central") // Firefox
+                .attr("x", function(timestamp, index) {
+                    return (index+1) * gridWidth - horizontalGridShift;
+                })
+                .attr("y", maxY + gridHeight)
                 .text(function(timestamp, index) {
                     if (index === 0 || timestamps[index] !== timestamps[index-1]) {
                         return timestamp;
@@ -281,10 +286,10 @@
                 });
 
             function getPixelCoordinateX(coordinate) {
-                return (coordinate+1) * gridWidth;
+                return (coordinate + 1) * gridWidth;
             }
             function getPixelCoordinateY(coordinate) {
-                return coordinate * gridHeight;
+                return (coordinate + 1) * gridHeight;
             }
             var dataPoints = g.append("g");
 
@@ -403,6 +408,24 @@
                 });
         });
     }
+
+    // read available post ids
+    d3.csv("data/index.csv", function (row) {
+        return {
+            PostId: parseInt(row.PostId)
+        }
+    }).then(function(data) {
+        postIds = data.map(function(row) { return row.PostId; });
+
+        // configure button
+        previousButton.attr("disabled", "disabled");
+        if (postIds.length === 0) {
+            nextButton.attr("disabled", "disabled");
+        }
+
+        // open first thread on startup
+        nextThread();
+    });
 </script>
 
 </body>
