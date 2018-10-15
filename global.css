@@ -14,7 +14,11 @@ div.header > button {
 }
 
 div.header > input {
-    width: 150px;
+    width: 100px;
+}
+
+div.header > input.interval {
+    width: 50px;
 }
 
 div.divider {

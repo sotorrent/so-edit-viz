@@ -12,12 +12,24 @@
 </head>
 <body>
 
+<div class="header">
+    <label for="event_id">Event ID: </label>
+    <input type="number" id="event_id" disabled/>
+    <div class="divider"></div>
+    <label for="interval">Interval (hours): </label>
+    <input type="number" id="interval" class="interval"/>
+    <button type="button" id="update">Update</button>
+</div>
+
 <svg></svg>
 
 <script>
     var gridWidth = 5;
     var gridStep = 60;
     var queryParameters = [];
+    var updateButton = d3.select("#update");
+
+    // read query parameters
     window.location.search.substr(1).split("&").forEach(function(keyValueString) {
         var keyValue = keyValueString.split("=");
         queryParameters[keyValue[0]] = keyValue[1];
@@ -30,58 +42,77 @@
     var postId = parseInt(queryParameters["postId"]);
     var eventId = parseInt(queryParameters["eventId"]);
 
-    readCSV(postId, function(data) {
-        var event = data.find(function(row) { return row.EventId === eventId; });
+    // set event id
+    document.getElementById("event_id").value = eventId;
 
-        if (event == null) {
-            errorMessage("Event not found.");
-        }
+    // set default offset
+    var interval = 24; // default interval is 24 hours
+    document.getElementById("interval").value = interval;
 
-        // retrieve posts and assign index (question has always index 0, answers index >0)
-        var posts = retrievePosts(data);
-
-        // retrieve question id
-        var questionId = retrieveQuestionId(data);
-
-        // filter events
-        var minute = 60000;
-        var hour = 60 * minute;
-        var minTimestamp = event.CreationDate.getTime() - 12*hour;
-        var maxTimestamp = event.CreationDate.getTime() + 12*hour;
-        data = data.filter(
-            function(row) {
-                return row.CreationDate.getTime() >= minTimestamp
-                    && row.CreationDate <= maxTimestamp;
-            }
-        );
-
-        // filter posts
-        var filteredPostIds = data.map(function(event) { return event.PostId; }).filter(onlyUnique);
-
-        // retrieve timestamps for x axis
-        minTimestamp = data[0].CreationDate;
-        maxTimestamp = data[data.length-1].CreationDate;
-
-        var timestamps = [];
-        for (var i = minTimestamp.getTime()-minute; i <= maxTimestamp.getTime()+minute; i+=minute) {
-            timestamps.push(getTimestampsDateAndTime(new Date(i)));
-        }
-
-        // configure svg element
-        var maxX = gridAxisWidth + timestamps.length * gridWidth;
-        var maxY = Object.keys(posts).length * gridHeight;
-        configureSVG(maxX, maxY);
-        var group = d3.select("#mainGroup");
-
-        drawGrid(group, timestamps, maxY, gridWidth, gridStep);
-        drawYAxis(group, posts, filteredPostIds);
-        drawXAxis(group, timestamps, maxY, gridWidth, gridStep);
-
-        var coordinates = getCoordinatesContinuous(data, posts, timestamps);
-
-        drawPolyLine(group, coordinates, gridWidth);
-        drawDataPoints(group, coordinates, posts, questionId, gridWidth, false);
+    // register event handlers
+    updateButton.on("click", function() {
+        interval = parseInt(document.getElementById("interval").value);
+        updateView(interval);
     });
+
+    updateView(interval);
+
+    function updateView(interval) {
+        clearSVG();
+        // read data and update view
+        readCSV(postId, function(data) {
+            var event = data.find(function(row) { return row.EventId === eventId; });
+
+            if (event == null) {
+                errorMessage("Event not found.");
+            }
+
+            // retrieve posts and assign index (question has always index 0, answers index >0)
+            var posts = retrievePosts(data);
+
+            // retrieve question id
+            var questionId = retrieveQuestionId(data);
+
+            // filter events
+            var minute = 60000;
+            var hour = 60 * minute;
+            var minTimestamp = event.CreationDate.getTime() - (interval/2)*hour;
+            var maxTimestamp = event.CreationDate.getTime() + (interval/2)*hour;
+            data = data.filter(
+                function(row) {
+                    return row.CreationDate.getTime() >= minTimestamp
+                        && row.CreationDate <= maxTimestamp;
+                }
+            );
+
+            // filter posts
+            var filteredPostIds = data.map(function(event) { return event.PostId; }).filter(onlyUnique);
+
+            // retrieve timestamps for x axis
+            minTimestamp = data[0].CreationDate;
+            maxTimestamp = data[data.length-1].CreationDate;
+
+            var timestamps = [];
+            for (var i = minTimestamp.getTime()-minute; i <= maxTimestamp.getTime()+minute; i+=minute) {
+                timestamps.push(getTimestampsDateAndTime(new Date(i)));
+            }
+
+            // configure svg element
+            var maxX = gridAxisWidth + timestamps.length * gridWidth;
+            var maxY = Object.keys(posts).length * gridHeight;
+            configureSVG(maxX, maxY);
+            var group = d3.select("#mainGroup");
+
+            drawGrid(group, timestamps, maxY, gridWidth, gridStep);
+            drawYAxis(group, posts, filteredPostIds);
+            drawXAxis(group, timestamps, maxY, gridWidth, gridStep);
+
+            var coordinates = getCoordinatesContinuous(data, posts, timestamps);
+
+            drawPolyLine(group, coordinates, gridWidth);
+            drawDataPoints(group, coordinates, posts, questionId, gridWidth, false);
+        });
+    }
 </script>
 
 </body>

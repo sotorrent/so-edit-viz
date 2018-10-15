@@ -32,8 +32,7 @@
     var previousButton = d3.select("#previous");
 
     function updateThread() {
-        // clear SVG
-        d3.select("svg").selectAll("*").remove();
+        clearSVG();
         // load data
         loadThread(postIds[currentIndex]);
         document.getElementById("post_id").value = postIds[currentIndex];

@@ -130,6 +130,10 @@ function configureSVG(maxX, maxY) {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
 
+function clearSVG() {
+    d3.select("svg").selectAll("*").remove();
+}
+
 function getCoordinatesDiscrete(data, posts) {
     var coordinates = [];
     data.forEach(function(row, index) {
@@ -328,6 +332,8 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
     var dataPoints = group
         .append("g")
         .attr("id", "dataPoints");
+
+    // add circles
     dataPoints.selectAll("circle")
         .data(coordinates)
         .enter()
@@ -377,6 +383,7 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
                 .style("opacity", 0.0);
         });
 
+    // add text labels
     dataPoints.selectAll("a")
         .data(coordinates)
         .enter()
