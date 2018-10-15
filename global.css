@@ -1,0 +1,44 @@
+body {
+    font-size: 14px;
+    font-family: sans-serif;
+}
+
+div.header {
+    display: block;
+}
+
+div.header > button {
+    width: 85px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+div.header > input {
+    width: 150px;
+}
+
+div.divider {
+    display: inline-block;
+    width: 20px;
+}
+
+svg {
+    margin-top: 10px;
+}
+
+text.event {
+    font-weight: bold;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    height: 32px;
+    padding: 2px;
+    background: lightgray;
+    border: 0;
+    border-radius: 8px;
+    pointer-events: none;
+    font-weight: bold;
+}

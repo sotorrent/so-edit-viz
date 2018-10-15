@@ -5,14 +5,18 @@
 
     <title>SOEditViz</title>
 
+    <link rel="stylesheet" type="text/css" href="global.css"/>
+
     <script src="lib/d3.js"></script>
-    <script src="functions.js"></script>
+    <script src="global.js"></script>
 </head>
 <body>
 
 <svg></svg>
 
 <script>
+    var gridWidth = 20;
+    var gridStep = 15;
     var queryParameters = [];
     window.location.search.substr(1).split("&").forEach(function(keyValueString) {
         var keyValue = keyValueString.split("=");
@@ -35,9 +39,34 @@
         var previousDay = getBeginningOfPreviousDay(event.CreationDate);
         var nextDay = getEndOfNextDay(event.CreationDate);
 
+        // retrieve posts and assign index (question has always index 0, answers index >0)
+        var posts = retrievePosts(data);
+
+        // filter events
         data = data.filter(function(row) { return row.CreationDate >= previousDay && row.CreationDate <= nextDay; })
 
-        // TODO: draw events on previous, current, and next day using continuous time
+        // filter posts
+        var filteredPostIds = data.map(function(event) { return event.PostId; }).filter(onlyUnique);
+
+        // retrieve timestamps for x axis
+        var minTimestamp = data[0].CreationDate;
+        var maxTimestamp = data[data.length-1].CreationDate;
+        //var timestamps = retrieveTimestampsDateAndTime(data);
+
+        var timestamps = [];
+        for (var i = minTimestamp.getTime(); i <= maxTimestamp.getTime(); i+=60000) {
+            timestamps.push(getTimestampsDateAndTime(new Date(i)));
+        }
+
+        // configure svg element
+        var maxX = (timestamps.length + 1) * gridWidth;
+        var maxY = Object.keys(posts).length * gridHeight;
+        configureSVG(maxX, maxY);
+        var group = d3.select("#mainGroup");
+
+        drawGrid(group, timestamps, maxY, gridWidth, gridStep);
+        drawYAxis(group, posts, filteredPostIds);
+        drawXAxis(group, timestamps, maxY, gridWidth, gridStep)
     });
 </script>
 
