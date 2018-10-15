@@ -37,9 +37,6 @@
             errorMessage("Event not found.");
         }
 
-        var previousDay = getBeginningOfPreviousDay(event.CreationDate);
-        var nextDay = getEndOfNextDay(event.CreationDate);
-
         // retrieve posts and assign index (question has always index 0, answers index >0)
         var posts = retrievePosts(data);
 
@@ -47,23 +44,31 @@
         var questionId = retrieveQuestionId(data);
 
         // filter events
-        data = data.filter(function(row) { return row.CreationDate >= previousDay && row.CreationDate <= nextDay; });
+        var minute = 60000;
+        var hour = 60 * minute;
+        var minTimestamp = event.CreationDate.getTime() - 12*hour;
+        var maxTimestamp = event.CreationDate.getTime() + 12*hour;
+        data = data.filter(
+            function(row) {
+                return row.CreationDate.getTime() >= minTimestamp
+                    && row.CreationDate <= maxTimestamp;
+            }
+        );
 
         // filter posts
         var filteredPostIds = data.map(function(event) { return event.PostId; }).filter(onlyUnique);
 
         // retrieve timestamps for x axis
-        var minTimestamp = data[0].CreationDate;
-        var maxTimestamp = data[data.length-1].CreationDate;
+        minTimestamp = data[0].CreationDate;
+        maxTimestamp = data[data.length-1].CreationDate;
 
         var timestamps = [];
-        var minute = 60000;
         for (var i = minTimestamp.getTime()-minute; i <= maxTimestamp.getTime()+minute; i+=minute) {
             timestamps.push(getTimestampsDateAndTime(new Date(i)));
         }
 
         // configure svg element
-        var maxX = gridYAxisWidth + timestamps.length * gridWidth;
+        var maxX = gridAxisWidth + timestamps.length * gridWidth;
         var maxY = Object.keys(posts).length * gridHeight;
         configureSVG(maxX, maxY);
         var group = d3.select("#mainGroup");
@@ -75,9 +80,7 @@
         var coordinates = getCoordinatesContinuous(data, posts, timestamps);
 
         drawPolyLine(group, coordinates, gridWidth);
-        drawDataPoints(group, coordinates, posts, questionId, gridWidth);
-
-        // TODO: overlap check --> offset?
+        drawDataPoints(group, coordinates, posts, questionId, gridWidth, false);
     });
 </script>
 

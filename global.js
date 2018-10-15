@@ -1,9 +1,9 @@
 var margin = {top: 40, right: 40, bottom: 40, left: 100};
-var circleRadius = 18;
+var circleRadius = 16;
 var circleStroke = 3;
 var lineStroke = 3;
 var gridStroke = 1;
-var gridYAxisWidth = 85;
+var gridAxisWidth = 85;
 var gridHeight = (2 * circleRadius) + 10;
 var horizontalGridShift = 40;
 var verticalGridPadding = 35;
@@ -92,6 +92,10 @@ function getRevisonsUrl(postId) {
     return "https://stackoverflow.com/posts/" + postId + "/revisions";
 }
 
+function getFocusLink(questionId, eventId) {
+    return "focus-view.html?postId=" + questionId  + "&eventId=" + eventId;
+}
+
 function retrievePosts(data) {
     var posts = {};
     data
@@ -147,14 +151,33 @@ function getCoordinatesContinuous(data, posts, timestamps) {
         var yPos = posts[row.PostId].Index;
         coordinates.push([xPos, yPos, row]);
     });
+
+    var resolvedEvents = [];
+    coordinates.forEach(function(coordinate) {
+        var collisions = coordinates.filter(
+            function(otherCoordinate) {
+                return coordinate !== otherCoordinate
+                    && !resolvedEvents.includes(otherCoordinate[2].EventId)
+                    && Math.abs(coordinate[0]-otherCoordinate[0]) <= 5;
+            });
+        if (collisions.length > 0) {
+            var offset = 0.5/collisions.length;
+            collisions.forEach(function(collision) {
+                collision[1] = collision[1] + offset;
+                resolvedEvents.push(collision[2].EventId);
+            });
+            resolvedEvents.push(coordinate[2].EventId);
+        }
+    });
+
     return coordinates;
 }
 
 function getPixelCoordinateX(coordinate, gridWidth) {
-    return gridYAxisWidth + coordinate * gridWidth;
+    return gridAxisWidth + coordinate * gridWidth;
 }
 function getPixelCoordinateY(coordinate) {
-    return gridYAxisWidth + coordinate * gridHeight;
+    return  (coordinate + 1) * gridHeight;
 }
 
 function drawGrid(group, timestamps, maxY, gridWidth, step) {
@@ -166,16 +189,16 @@ function drawGrid(group, timestamps, maxY, gridWidth, step) {
         .enter()
         .append("line")
         .attr("x1", function(timestamp, index) {
-            return gridYAxisWidth + index * gridWidth - horizontalGridShift;
+            return gridAxisWidth + index * gridWidth - horizontalGridShift;
         })
         .attr("y1", gridHeight - verticalGridPadding)
         .attr("x2", function(timestamp, index) {
-            return gridYAxisWidth + index * gridWidth - horizontalGridShift;
+            return gridAxisWidth + index * gridWidth - horizontalGridShift;
         })
         .attr("y2", maxY + verticalGridPadding)
         .attr("stroke", function(timestamp, index) {
             if (step != null) {
-                if (index === 0 || index%(step-1) === 0) {
+                if (index === 0 || index%step === 0) {
                     return "lightgray";
                 }
             } else {
@@ -192,7 +215,7 @@ function drawGrid(group, timestamps, maxY, gridWidth, step) {
 function drawXAxis(group, timestamps, maxY, gridWidth, step) {
     function getTextString(timestamp, index) {
         if (step != null) {
-            if (index === 0 || index%(step-1) === 0) {
+            if (index === 0 || index%step === 0) {
                 return timestamp;
             }
         } else {
@@ -214,7 +237,7 @@ function drawXAxis(group, timestamps, maxY, gridWidth, step) {
         .attr("alignment-baseline", "central") // Chrome
         .attr("dominant-baseline", "central") // Firefox
         .attr("x", function(timestamp, index) {
-            return gridYAxisWidth + index * gridWidth - horizontalGridShift;
+            return gridAxisWidth + index * gridWidth - horizontalGridShift;
         })
         .attr("y", 0)
         .text(getTextString);
@@ -230,7 +253,7 @@ function drawXAxis(group, timestamps, maxY, gridWidth, step) {
         .attr("alignment-baseline", "central") // Chrome
         .attr("dominant-baseline", "central") // Firefox
         .attr("x", function(timestamp, index) {
-            return gridYAxisWidth + index * gridWidth - horizontalGridShift;
+            return gridAxisWidth + index * gridWidth - horizontalGridShift;
         })
         .attr("y", maxY + gridHeight)
         .text(getTextString);
@@ -294,7 +317,7 @@ function drawPolyLine(group, coordinates, gridWidth) {
         .attr("stroke-width", lineStroke);
 }
 
-function drawDataPoints(group, coordinates, posts, questionId, gridWidth) {
+function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFocusView) {
     // append the tooltip div
     var tooltip = d3.select("body")
         .append("div")
@@ -360,10 +383,14 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth) {
         .append("a")
         .attr("xlink:href",  function(coordinate) {
             var row = coordinate[2];
-            if (row.Event === "Comment") {
-                return getCommentUrl(questionId, row.EventId, row.PostId);
+            if (linkFocusView) {
+                return getFocusLink(questionId, row.EventId);
             } else {
-                return getRevisonsUrl(row.PostId);
+                if (row.Event === "Comment") {
+                    return getCommentUrl(questionId, row.EventId, row.PostId);
+                } else {
+                    return getRevisonsUrl(row.PostId);
+                }
             }
         })
         .attr("target", "_blank")
