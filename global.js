@@ -144,7 +144,7 @@ function getCoordinatesDiscrete(data, posts) {
     return coordinates;
 }
 
-function getCoordinatesContinuous(data, posts, timestamps) {
+function getCoordinatesContinuous(data, posts, timestamps, gridWidth) {
     var coordinates = [];
     data.forEach(function(row) {
         var timestamp = getTimestampsDateAndTime(row.CreationDate);
@@ -157,27 +157,24 @@ function getCoordinatesContinuous(data, posts, timestamps) {
     });
 
     var updatedEvents = [];
-    coordinates.forEach(function(coordinate) {
-        var collisions = coordinates.filter(
-            function(otherCoordinate) {
-                return coordinate !== otherCoordinate
-                    && !updatedEvents.includes(otherCoordinate[2].EventId)
-                    && Math.abs(coordinate[0]-otherCoordinate[0]) <= 5;
-            });
-        if (collisions.length > 0) {
-            collisions.push(coordinate);
-            collisions.sort(function(collision1, collision2) {
-                return collision1[2].CreationDate - collision2[2].CreationDate;
-            });
-            var offset = gridWidth/(collisions.length-1);
-            var i;
-            updatedEvents.push(collisions[0][2].EventId);
-            for (i=1; i<collisions.length; i++) {
-                collisions[i][0] = collisions[i][0] + offset;
-                updatedEvents.push(collisions[i][2].EventId);
+    var i, j;
+    for (i=0; i<coordinates.length; i++) {
+        var collisions = [];
+        for (j=i+1; j<coordinates.length; j++) {
+            if (!updatedEvents.includes(coordinates[j][2].EventId)
+                && Math.abs(coordinates[i][0] - coordinates[j][0]) < 5) {
+                collisions.push(coordinates[j]);
             }
         }
-    });
+        if (collisions.length > 0) {
+            var offset = gridWidth/collisions.length;
+            collisions.forEach(function(collision) {
+                collision[0] = collision[0] + offset; // shift x coordinate
+                updatedEvents.push(collision[2].EventId);
+            });
+            updatedEvents.push(coordinates[i][2].EventId);
+        }
+    }
 
     return coordinates;
 }
@@ -339,9 +336,26 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
         .attr("id", "dataPoints");
 
     // add circles
-    dataPoints.selectAll("circle")
+    dataPoints.selectAll("a")
         .data(coordinates)
         .enter()
+        .append("a")
+        .attr("id", function(coordinate) {
+            return "a" + coordinate[2].EventId;
+        })
+        .attr("xlink:href",  function(coordinate) {
+            var row = coordinate[2];
+            if (linkFocusView) {
+                return getFocusLink(questionId, row.EventId);
+            } else {
+                if (row.Event === "Comment") {
+                    return getCommentUrl(questionId, row.EventId, row.PostId);
+                } else {
+                    return getRevisonsUrl(row.PostId);
+                }
+            }
+        })
+        .attr("target", "_blank")
         .append("circle")
         .attr("id", function(coordinate) {
             return "circle" + coordinate[2].EventId;
@@ -391,27 +405,8 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
                 .style("opacity", 0.0);
         });
 
-    // add text labels
     dataPoints.selectAll("a")
         .data(coordinates)
-        .enter()
-        .append("a")
-        .attr("id", function(coordinate) {
-            return "a" + coordinate[2].EventId;
-        })
-        .attr("xlink:href",  function(coordinate) {
-            var row = coordinate[2];
-            if (linkFocusView) {
-                return getFocusLink(questionId, row.EventId);
-            } else {
-                if (row.Event === "Comment") {
-                    return getCommentUrl(questionId, row.EventId, row.PostId);
-                } else {
-                    return getRevisonsUrl(row.PostId);
-                }
-            }
-        })
-        .attr("target", "_blank")
         .append("text")
         .attr("id", function(coordinate) {
             return "text" + coordinate[2].EventId;
