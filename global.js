@@ -7,6 +7,7 @@ var gridAxisWidth = 85;
 var gridHeight = (2 * circleRadius) + 10;
 var horizontalGridShift = 40;
 var verticalGridPadding = 35;
+var overlapShift = 4;
 
 function errorMessage(errorMessage) {
     alert(errorMessage);
@@ -144,7 +145,7 @@ function getCoordinatesDiscrete(data, posts) {
     return coordinates;
 }
 
-function getCoordinatesContinuous(data, posts, timestamps, gridWidth) {
+function getCoordinatesContinuous(data, posts, timestamps) {
     var coordinates = [];
     data.forEach(function(row) {
         var timestamp = getTimestampsDateAndTime(row.CreationDate);
@@ -162,12 +163,12 @@ function getCoordinatesContinuous(data, posts, timestamps, gridWidth) {
         var collisions = [];
         for (j=i+1; j<coordinates.length; j++) {
             if (!updatedEvents.includes(coordinates[j][2].EventId)
-                && Math.abs(coordinates[i][0] - coordinates[j][0]) < 5) {
+                && Math.abs(coordinates[i][0] - coordinates[j][0]) < overlapShift) {
                 collisions.push(coordinates[j]);
             }
         }
         if (collisions.length > 0) {
-            var offset = gridWidth/collisions.length;
+            var offset = overlapShift/collisions.length;
             collisions.forEach(function(collision) {
                 collision[0] = collision[0] + offset; // shift x coordinate
                 updatedEvents.push(collision[2].EventId);
