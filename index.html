@@ -84,25 +84,19 @@
             var posts = retrievePosts(data);
 
             // retrieve question id
-            var questionId = data.find(function(row) {return row.PostTypeId === 1;}).PostId;
+            var questionId = retrieveQuestionId(data);
 
             // retrieve timestamps for x axis
             var timestamps = retrieveTimestampsDate(data);
 
             // get x and y coordinates
-            var coordinates = getCoordinates(data, posts);
+            var coordinates = getCoordinatesDiscrete(data, posts);
 
             // configure svg element
             var maxX = (data.length + 1) * gridWidth;
             var maxY = Object.keys(posts).length * gridHeight;
             configureSVG(maxX, maxY);
             var group = d3.select("#mainGroup");
-
-            // append the tooltip div
-            var tooltip = d3.select("body")
-                .append("div")
-                .attr("class", "tooltip")
-                .style("opacity", 0);
 
             // draw grid
             drawGrid(group, timestamps, maxY, gridWidth);
@@ -113,125 +107,11 @@
             // draw x axes;
             drawXAxis(group, timestamps, maxY, gridWidth);
 
-            function getPixelCoordinateX(coordinate) {
-                return (coordinate + 1) * gridWidth;
-            }
-            function getPixelCoordinateY(coordinate) {
-                return (coordinate + 1) * gridHeight;
-            }
-            var dataPoints = group.append("g");
-
             // draw polyline connecting data points
-            var polyLine = "";
-            coordinates.forEach(function(coordinate, index) {
-                if (index > 0) {
-                    polyLine += " ";
-                }
-                polyLine += getPixelCoordinateX(coordinate[0]) + "," + getPixelCoordinateY(coordinate[1]);
-            });
-            dataPoints.append("polyline")
-                .attr("points", polyLine)
-                .attr("fill", "none")
-                .attr("stroke", "lightgray")
-                .attr("stroke-width", lineStroke);
+            drawPolyLine(group, coordinates, gridWidth);
 
             // draw data points
-            dataPoints.selectAll("circle")
-                .data(coordinates)
-                .enter()
-                .append("circle")
-                .attr("cx", function(coordinate) {
-                    return getPixelCoordinateX(coordinate[0]);
-                })
-                .attr("cy", function(coordinate) {
-                    return getPixelCoordinateY(coordinate[1]);
-                })
-                .attr("r", circleRadius)
-                .attr("fill", function(coordinate) {
-                    var row = coordinate[2];
-                    if (row.Event === "Comment") {
-                        return "mediumaquamarine ";
-                    } else {
-                        return "skyblue";
-                    }
-                })
-                .attr("stroke", function(coordinate) {
-                    var row = coordinate[2];
-                    if (row.UserId === posts[row.PostId].OwnerId) {
-                        if (row.Event === "Comment") {
-                            return "#078C5F";
-                        } else {
-                            return "#0F5A78";
-                        }
-                    } else {
-                        return "tomato";
-                    }
-                })
-                .attr("stroke-width", circleStroke)
-                .on("mouseover", function(coordinate) {
-                    tooltip
-                        .transition()
-                        .duration(50)
-                        .style("opacity", 0.9);
-                    tooltip
-                        .html(extractDateAndTimeString(coordinate[2].CreationDate))
-                        .style("left", (d3.event.pageX) + "px")
-                        .style("top", (d3.event.pageY - 18) + "px");
-                })
-                .on("mouseout", function() {
-                    tooltip
-                        .transition()
-                        .duration(50)
-                        .style("opacity", 0.0);
-                });
-
-            function getCommentUrl(questionId, commentId, postId) {
-                return "https://stackoverflow.com/q/" + questionId + "#comment" + commentId + "_" + postId;
-            }
-
-            function getRevisonsUrl(postId) {
-                return "https://stackoverflow.com/posts/" + postId + "/revisions";
-            }
-
-            dataPoints.selectAll("a")
-                .data(coordinates)
-                .enter()
-                .append("a")
-                .attr("xlink:href",  function(coordinate) {
-                    var row = coordinate[2];
-                    if (row.Event === "Comment") {
-                        return getCommentUrl(questionId, row.EventId, row.PostId);
-                    } else {
-                        return getRevisonsUrl(row.PostId);
-                    }
-                })
-                .attr("target", "_blank")
-                .append("text")
-                .attr("text-anchor", "middle")
-                .attr("alignment-baseline", "central") // Chrome
-                .attr("dominant-baseline", "central") // Firefox
-                .attr("class", "event")
-                .attr("x", function(coordinate) {
-                    return getPixelCoordinateX(coordinate[0]);
-                })
-                .attr("y", function(coordinate) {
-                    return getPixelCoordinateY(coordinate[1]);
-                })
-                .text(function(coordinate) {
-                    var row = coordinate[2];
-
-                    if (row.Event === "InitialBody") { // includes "InitialTitle", which is ignored (see readCSV())
-                        return "I";
-                    } else if (row.Event === "BodyEdit") {
-                        return "E";
-                    } else if (row.Event === "TitleEdit") {
-                        return "TE";
-                    } else if (row.Event === "Comment") {
-                        return "C";
-                    } else {
-                        return "X";
-                    }
-                });
+            drawDataPoints(group, coordinates, posts, questionId, gridWidth);
         });
     }
 

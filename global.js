@@ -8,6 +8,11 @@ var gridHeight = (2 * circleRadius) + 10;
 var horizontalGridShift = 40;
 var verticalGridPadding = 35;
 
+function errorMessage(errorMessage) {
+    alert(errorMessage);
+    throw new Error(errorMessage);
+}
+
 function readCSV(postId,  callback) {
     d3.csv("data/" + postId + ".csv", function (row) {
         return {
@@ -24,6 +29,10 @@ function readCSV(postId,  callback) {
             .sort(function(row1, row2) { return row1.CreationDate - row2.CreationDate; });
         callback(data);
     });
+}
+
+function retrieveQuestionId(data) {
+    return data.find(function(row) {return row.PostTypeId === 1;}).PostId;
 }
 
 function extractDateAndTimeString(date) {
@@ -75,6 +84,14 @@ function retrieveTimestampsDateAndTime(data) {
     return data.map(function(row) { return getTimestampsDateAndTime(row.CreationDate); });
 }
 
+function getCommentUrl(questionId, commentId, postId) {
+    return "https://stackoverflow.com/q/" + questionId + "#comment" + commentId + "_" + postId;
+}
+
+function getRevisonsUrl(postId) {
+    return "https://stackoverflow.com/posts/" + postId + "/revisions";
+}
+
 function retrievePosts(data) {
     var posts = {};
     data
@@ -109,7 +126,7 @@ function configureSVG(maxX, maxY) {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 }
 
-function getCoordinates(data, posts) {
+function getCoordinatesDiscrete(data, posts) {
     var coordinates = [];
     data.forEach(function(row, index) {
         var xPos = index;
@@ -117,6 +134,27 @@ function getCoordinates(data, posts) {
         coordinates.push([xPos, yPos, row]);
     });
     return coordinates;
+}
+
+function getCoordinatesContinuous(data, posts, timestamps) {
+    var coordinates = [];
+    data.forEach(function(row) {
+        var timestamp = getTimestampsDateAndTime(row.CreationDate);
+        var xPos = timestamps.indexOf(timestamp);
+        if (xPos === -1) {
+            errorMessage("Date not found.");
+        }
+        var yPos = posts[row.PostId].Index;
+        coordinates.push([xPos, yPos, row]);
+    });
+    return coordinates;
+}
+
+function getPixelCoordinateX(coordinate, gridWidth) {
+    return gridYAxisWidth + coordinate * gridWidth;
+}
+function getPixelCoordinateY(coordinate) {
+    return gridYAxisWidth + coordinate * gridHeight;
 }
 
 function drawGrid(group, timestamps, maxY, gridWidth, step) {
@@ -234,5 +272,125 @@ function drawYAxis(group, posts, filteredPostIds) {
         })
         .text(function(postId) {
             return posts[postId].SOId;
+        });
+}
+
+function drawPolyLine(group, coordinates, gridWidth) {
+    var polyLine = group
+        .append("g")
+        .attr("id", "polyLine");
+    var polyLineCoordinates = "";
+    coordinates.forEach(function(coordinate, index) {
+        if (index > 0) {
+            polyLineCoordinates += " ";
+        }
+        polyLineCoordinates += getPixelCoordinateX(coordinate[0], gridWidth) + "," + getPixelCoordinateY(coordinate[1]);
+    });
+    polyLine
+        .append("polyline")
+        .attr("points", polyLineCoordinates)
+        .attr("fill", "none")
+        .attr("stroke", "lightgray")
+        .attr("stroke-width", lineStroke);
+}
+
+function drawDataPoints(group, coordinates, posts, questionId, gridWidth) {
+    // append the tooltip div
+    var tooltip = d3.select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    // add data
+    var dataPoints = group
+        .append("g")
+        .attr("id", "dataPoints");
+    dataPoints.selectAll("circle")
+        .data(coordinates)
+        .enter()
+        .append("circle")
+        .attr("cx", function(coordinate) {
+            return getPixelCoordinateX(coordinate[0], gridWidth);
+        })
+        .attr("cy", function(coordinate) {
+            return getPixelCoordinateY(coordinate[1]);
+        })
+        .attr("r", circleRadius)
+        .attr("fill", function(coordinate) {
+            var row = coordinate[2];
+            if (row.Event === "Comment") {
+                return "mediumaquamarine ";
+            } else {
+                return "skyblue";
+            }
+        })
+        .attr("stroke", function(coordinate) {
+            var row = coordinate[2];
+            if (row.UserId === posts[row.PostId].OwnerId) {
+                if (row.Event === "Comment") {
+                    return "#078C5F";
+                } else {
+                    return "#0F5A78";
+                }
+            } else {
+                return "tomato";
+            }
+        })
+        .attr("stroke-width", circleStroke)
+        .on("mouseover", function(coordinate) {
+            tooltip
+                .transition()
+                .duration(50)
+                .style("opacity", 0.9);
+            tooltip
+                .html(extractDateAndTimeString(coordinate[2].CreationDate))
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 18) + "px");
+        })
+        .on("mouseout", function() {
+            tooltip
+                .transition()
+                .duration(50)
+                .style("opacity", 0.0);
+        });
+
+    dataPoints.selectAll("a")
+        .data(coordinates)
+        .enter()
+        .append("a")
+        .attr("xlink:href",  function(coordinate) {
+            var row = coordinate[2];
+            if (row.Event === "Comment") {
+                return getCommentUrl(questionId, row.EventId, row.PostId);
+            } else {
+                return getRevisonsUrl(row.PostId);
+            }
+        })
+        .attr("target", "_blank")
+        .append("text")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "central") // Chrome
+        .attr("dominant-baseline", "central") // Firefox
+        .attr("class", "event")
+        .attr("x", function(coordinate) {
+            return getPixelCoordinateX(coordinate[0], gridWidth);
+        })
+        .attr("y", function(coordinate) {
+            return getPixelCoordinateY(coordinate[1]);
+        })
+        .text(function(coordinate) {
+            var row = coordinate[2];
+
+            if (row.Event === "InitialBody") { // includes "InitialTitle", which is ignored (see readCSV())
+                return "I";
+            } else if (row.Event === "BodyEdit") {
+                return "E";
+            } else if (row.Event === "TitleEdit") {
+                return "TE";
+            } else if (row.Event === "Comment") {
+                return "C";
+            } else {
+                return "X";
+            }
         });
 }
