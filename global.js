@@ -343,6 +343,9 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
         .data(coordinates)
         .enter()
         .append("circle")
+        .attr("id", function(coordinate) {
+            return "circle" + coordinate[2].EventId;
+        })
         .attr("cx", function(coordinate) {
             return getPixelCoordinateX(coordinate[0], gridWidth);
         })
@@ -393,6 +396,9 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
         .data(coordinates)
         .enter()
         .append("a")
+        .attr("id", function(coordinate) {
+            return "a" + coordinate[2].EventId;
+        })
         .attr("xlink:href",  function(coordinate) {
             var row = coordinate[2];
             if (linkFocusView) {
@@ -407,6 +413,9 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
         })
         .attr("target", "_blank")
         .append("text")
+        .attr("id", function(coordinate) {
+            return "text" + coordinate[2].EventId;
+        })
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "central") // Chrome
         .attr("dominant-baseline", "central") // Firefox
