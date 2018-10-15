@@ -156,21 +156,26 @@ function getCoordinatesContinuous(data, posts, timestamps) {
         coordinates.push([xPos, yPos, row]);
     });
 
-    var resolvedEvents = [];
+    var updatedEvents = [];
     coordinates.forEach(function(coordinate) {
         var collisions = coordinates.filter(
             function(otherCoordinate) {
                 return coordinate !== otherCoordinate
-                    && !resolvedEvents.includes(otherCoordinate[2].EventId)
+                    && !updatedEvents.includes(otherCoordinate[2].EventId)
                     && Math.abs(coordinate[0]-otherCoordinate[0]) <= 5;
             });
         if (collisions.length > 0) {
-            var offset = 0.5/collisions.length;
-            collisions.forEach(function(collision) {
-                collision[1] = collision[1] + offset;
-                resolvedEvents.push(collision[2].EventId);
+            collisions.push(coordinate);
+            collisions.sort(function(collision1, collision2) {
+                return collision1[2].CreationDate - collision2[2].CreationDate;
             });
-            resolvedEvents.push(coordinate[2].EventId);
+            var offset = gridWidth/(collisions.length-1);
+            var i;
+            updatedEvents.push(collisions[0][2].EventId);
+            for (i=1; i<collisions.length; i++) {
+                collisions[i][0] = collisions[i][0] + offset;
+                updatedEvents.push(collisions[i][2].EventId);
+            }
         }
     });
 
