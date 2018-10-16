@@ -38,7 +38,9 @@
     var eventIdInput = document.getElementById("event_id");
 
     function updateThread() {
+        // clear GUI
         clearSVG();
+        eventIdInput.value = "";
         // load data
         loadThread(postIds[currentIndex]);
         document.getElementById("post_id").value = postIds[currentIndex];
