@@ -336,9 +336,23 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
         .append("g")
         .attr("id", "dataPoints");
 
-    function highlightOnClickEventHandler(coordinate) {
+    // helper functions
+    function getSOLink(element, questionId) {
+        if (element.Event === "Comment") {
+            return getCommentUrl(questionId, element.EventId, element.PostId);
+        } else {
+            return getRevisonsUrl(element.PostId);
+        }
+    }
+
+    function onClickEventHandler(coordinate) {
         if (highlightOnClick) {
             highlightEvent(coordinate[2].EventId);
+        }
+
+        if (d3.event.altKey) {
+            window.open(getSOLink(coordinate[2]), '_blank');
+            d3.event.preventDefault();
         }
     }
 
@@ -355,15 +369,11 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
             if (linkFocusView) {
                 return getFocusLink(questionId, row.EventId);
             } else {
-                if (row.Event === "Comment") {
-                    return getCommentUrl(questionId, row.EventId, row.PostId);
-                } else {
-                    return getRevisonsUrl(row.PostId);
-                }
+                return getSOLink(row, questionId);
             }
         })
         .attr("target", "_blank")
-        .on("click", highlightOnClickEventHandler)
+        .on("click", onClickEventHandler)
         .append("circle")
         .attr("id", function(coordinate) {
             return "circle" + coordinate[2].EventId;
@@ -415,7 +425,7 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
                 .duration(50)
                 .style("opacity", 0.0);
         })
-        .on("click", highlightOnClickEventHandler);
+        .on("click", onClickEventHandler);
 
     dataPoints.selectAll("a")
         .data(coordinates)
@@ -448,7 +458,7 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
                 return "X";
             }
         })
-        .on("click", highlightOnClickEventHandler);
+        .on("click", onClickEventHandler);
 }
 
 function highlightEvent(eventId) {
