@@ -85,8 +85,11 @@
 
     highlightButton.on("click", function () {
         var eventId = parseInt(document.getElementById("event_id").value);
-        d3.select("#highlight-circle").remove();
         var circle = d3.select("#circle" + eventId);
+        if (circle.empty()) {
+            errorMessage("Event not found.")
+        }
+        d3.select("#highlight-circle").remove();
         d3.select("#a" + eventId)
             .append("circle")
             .attr("id", "highlight-circle")
