@@ -324,7 +324,7 @@ function drawPolyLine(group, coordinates, gridWidth) {
         .attr("stroke-width", lineStroke);
 }
 
-function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFocusView) {
+function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFocusView, eventIdTarget) {
     // append the tooltip div
     var tooltip = d3.select("body")
         .append("div")
@@ -390,6 +390,9 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
         })
         .attr("stroke-width", circleStroke)
         .on("mouseover", function(coordinate) {
+            if (eventIdTarget != null) {
+                eventIdTarget.value = coordinate[2].EventId;
+            }
             tooltip
                 .transition()
                 .duration(50)

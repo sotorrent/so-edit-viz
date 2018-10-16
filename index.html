@@ -19,6 +19,10 @@
     <div class="divider"></div>
     <button type="button" id="previous">< Previous</button>
     <button type="button" id="next">Next ></button>
+    <div class="divider"></div>
+    <label for="event_id">Event ID: </label>
+    <input type="number" id="event_id"/>
+    <button type="button" id="highlight">Highlight</button>
 </div>
 
 <svg></svg>
@@ -30,6 +34,8 @@
     var loadButton = d3.select("#load");
     var nextButton = d3.select("#next");
     var previousButton = d3.select("#previous");
+    var highlightButton = d3.select("#highlight");
+    var eventIdInput = document.getElementById("event_id");
 
     function updateThread() {
         clearSVG();
@@ -77,6 +83,21 @@
     nextButton.on("click", nextThread);
     previousButton.on("click", previousThread);
 
+    highlightButton.on("click", function () {
+        var eventId = parseInt(document.getElementById("event_id").value);
+        d3.select("#highlight-circle").remove();
+        var circle = d3.select("#circle" + eventId);
+        d3.select("#a" + eventId)
+            .append("circle")
+            .attr("id", "highlight-circle")
+            .attr("cx", circle.attr("cx"))
+            .attr("cy", circle.attr("cy"))
+            .attr("r", circleRadius + circleStroke)
+            .attr("fill", "none")
+            .attr("stroke", "yellow")
+            .attr("stroke-width", circleStroke);
+    });
+
     function loadThread(postId) {
         readCSV(postId, function(data) {
             // retrieve posts and assign index (question has always index 0, answers index >0)
@@ -110,7 +131,7 @@
             drawPolyLine(group, coordinates, gridWidth);
 
             // draw data points
-            drawDataPoints(group, coordinates, posts, questionId, gridWidth, true);
+            drawDataPoints(group, coordinates, posts, questionId, gridWidth, true, eventIdInput);
         });
     }
 
