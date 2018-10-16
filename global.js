@@ -351,8 +351,9 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
         }
 
         if (d3.event.altKey) {
-            window.open(getSOLink(coordinate[2]), '_blank');
+            window.open(getSOLink(coordinate[2], questionId), '_blank');
             d3.event.preventDefault();
+            d3.event.stopPropagation();
         }
     }
 
