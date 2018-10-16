@@ -324,7 +324,7 @@ function drawPolyLine(group, coordinates, gridWidth) {
         .attr("stroke-width", lineStroke);
 }
 
-function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFocusView, eventIdTarget) {
+function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFocusView, eventIdTarget, highlightOnClick) {
     // append the tooltip div
     var tooltip = d3.select("body")
         .append("div")
@@ -335,6 +335,12 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
     var dataPoints = group
         .append("g")
         .attr("id", "dataPoints");
+
+    function highlightOnClickEventHandler(coordinate) {
+        if (highlightOnClick) {
+            highlightEvent(coordinate[2].EventId);
+        }
+    }
 
     // add circles
     dataPoints.selectAll("a")
@@ -357,6 +363,7 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
             }
         })
         .attr("target", "_blank")
+        .on("click", highlightOnClickEventHandler)
         .append("circle")
         .attr("id", function(coordinate) {
             return "circle" + coordinate[2].EventId;
@@ -407,7 +414,8 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
                 .transition()
                 .duration(50)
                 .style("opacity", 0.0);
-        });
+        })
+        .on("click", highlightOnClickEventHandler);
 
     dataPoints.selectAll("a")
         .data(coordinates)
@@ -439,5 +447,23 @@ function drawDataPoints(group, coordinates, posts, questionId, gridWidth, linkFo
             } else {
                 return "X";
             }
-        });
+        })
+        .on("click", highlightOnClickEventHandler);
+}
+
+function highlightEvent(eventId) {
+    var circle = d3.select("#circle" + eventId);
+    if (circle.empty()) {
+        errorMessage("Event not found.")
+    }
+    d3.select("#highlight-circle").remove();
+    d3.select("#a" + eventId)
+        .append("circle")
+        .attr("id", "highlight-circle")
+        .attr("cx", circle.attr("cx"))
+        .attr("cy", circle.attr("cy"))
+        .attr("r", circleRadius + circleStroke)
+        .attr("fill", "none")
+        .attr("stroke", "yellow")
+        .attr("stroke-width", circleStroke);
 }

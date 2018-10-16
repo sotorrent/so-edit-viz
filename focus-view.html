@@ -110,7 +110,9 @@
             var coordinates = getCoordinatesContinuous(data, posts, timestamps);
 
             drawPolyLine(group, coordinates, gridWidth);
-            drawDataPoints(group, coordinates, posts, questionId, gridWidth, false);
+            drawDataPoints(group, coordinates, posts, questionId, gridWidth, false, null, false);
+
+            highlightEvent(eventId);
         });
     }
 </script>
