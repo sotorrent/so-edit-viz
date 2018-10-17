@@ -1,17 +1,22 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-3529744,1,7363373,InitialTitle,265226,"2010-08-20 09:44:52"
-3529744,1,7363372,InitialBody,265226,"2010-08-20 09:44:52"
-3529744,1,3693131,Comment,289004,"2010-08-20 10:13:18"
-3529744,1,3693152,Comment,289004,"2010-08-20 10:15:58"
-3529744,1,3693528,Comment,340355,"2010-08-20 11:03:12"
-3529744,1,3693606,Comment,4833,"2010-08-20 11:13:26"
-3532451,2,7369209,InitialBody,40489,"2010-08-20 15:39:30"
-3529744,1,7378455,BodyEdit,265226,"2010-08-21 06:37:23"
-3532451,2,3701692,Comment,265226,"2010-08-21 06:44:09"
-3529744,1,3701699,Comment,265226,"2010-08-21 06:46:09"
-3529744,1,3701740,Comment,265226,"2010-08-21 06:58:13"
-3529744,1,7378616,BodyEdit,265226,"2010-08-21 06:59:19"
-3529744,1,3701780,Comment,265226,"2010-08-21 07:11:16"
-3532451,2,3748826,Comment,40489,"2010-08-26 12:01:23"
-3532451,2,7463235,BodyEdit,40489,"2010-08-26 12:02:35"
-3532451,2,7504504,BodyEdit,40489,"2010-08-29 02:45:35"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+3529744,1,7363373,InitialTitle,265226,8/20/2010 9:44,N/A,N/A
+3529744,1,7363372,InitialBody,265226,8/20/2010 9:44,N/A,N/A
+3529744,1,3693131,Comment,289004,8/20/2010 10:13,speculation,
+3529744,1,3693152,Comment,289004,8/20/2010 10:15,"more speculation by same user, shortly after",
+3529744,1,3693528,Comment,340355,8/20/2010 11:03,works-for-me comment on question,
+3529744,1,3693606,Comment,4833,8/20/2010 11:13,clarification question on question,
+3532451,2,7369209,InitialBody,40489,8/20/2010 15:39,N/A,N/A
+3529744,1,7378455,BodyEdit,265226,8/21/2010 6:37,add substantial detail to question,
+3532451,2,3701692,Comment,265226,8/21/2010 6:44,bring answerer's attention to edit in question,
+3529744,1,3701699,Comment,265226,8/21/2010 6:46,clarification on question,
+3529744,1,3701740,Comment,265226,8/21/2010 6:58,speculation and testing from question asker,
+3529744,1,7378616,BodyEdit,265226,8/21/2010 6:59,question asker copied their clarification comment into question,
+3529744,1,3701780,Comment,265226,8/21/2010 7:11,"more speculation and testing from question asker, shortly after",
+3532451,2,3748826,Comment,40489,8/26/2010 12:01,speculation by person answering question in response to asker's comment from a few days earlier,
+3532451,2,7463235,BodyEdit,40489,8/26/2010 12:02,added substantial detail to answer,
+3532451,2,7504504,BodyEdit,40489,8/29/2010 2:45,"added ""hope it works for you"" to answer",
+,,,,,,two comment pairs within minutes,
+,,,,,,edit-comment-comment-edit-comment on question,
+,,,,,,comment-edit on answer,
+,,,,,,bring answerer's attention to edit in question,
+,,,,,,question asker copied their clarification comment into question,

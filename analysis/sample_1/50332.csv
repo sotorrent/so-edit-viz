@@ -1,8 +1,9 @@
 PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
-50332,1,70423,InitialBody,4398,2008-09-08 18:17:54,N/A,N/A
-50332,1,70421,InitialTitle,4398,2008-09-08 18:17:54,N/A,N/A
-52030,2,72892,InitialBody,5410,2008-09-09 14:36:12,N/A,N/A
-52030,2,851869,Comment,5410,2009-06-24 21:15:35,,Indicate that post not answers the question
-52030,2,2165421,BodyEdit,1440933,2009-07-10 15:37:44,,"Formatting, unrelated to comment"
-1315206,2,2587596,InitialBody,159770,2009-08-22 05:22:12,N/A,N/A
-10566072,2,24341291,InitialBody,41693,2012-05-12 17:48:17,N/A,N/A
+50332,1,70423,InitialBody,4398,9/8/2008 18:17,N/A,N/A
+50332,1,70421,InitialTitle,4398,9/8/2008 18:17,N/A,N/A
+52030,2,72892,InitialBody,5410,9/9/2008 14:36,N/A,N/A
+52030,2,851869,Comment,5410,6/24/2009 21:15,indicate that answer doesn't answer question,Indicate that post not answers the question
+52030,2,2165421,BodyEdit,1440933,7/10/2009 15:37,"formatting, unrelated to comment","Formatting, unrelated to comment"
+1315206,2,2587596,InitialBody,159770,8/22/2009 5:22,N/A,N/A
+10566072,2,24341291,InitialBody,41693,5/12/2012 17:48,N/A,N/A
+,,,,,,all events at least 24 hrs apart,
