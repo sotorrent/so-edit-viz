@@ -1,9 +1,12 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-8687577,1,19569648,InitialBody,1124186,"2011-12-31 10:26:40"
-8687577,1,19569649,InitialTitle,1124186,"2011-12-31 10:26:40"
-8687577,1,10803550,Comment,1076318,"2011-12-31 10:48:38"
-8687577,1,19570918,BodyEdit,1124186,"2011-12-31 12:25:04"
-8687577,1,10804442,Comment,1124186,"2011-12-31 13:03:27"
-8687577,1,10805414,Comment,1124186,"2011-12-31 14:59:25"
-8687577,1,10898717,Comment,135133,"2012-01-05 19:15:01"
-8762687,2,19759859,InitialBody,582278,"2012-01-06 18:34:08"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+8687577,1,19569648,InitialBody,1124186,12/31/2011 10:26,N/A,N/A
+8687577,1,19569649,InitialTitle,1124186,12/31/2011 10:26,N/A,N/A
+8687577,1,10803550,Comment,1076318,12/31/2011 10:48,asking for clarification,
+8687577,1,19570918,BodyEdit,1124186,12/31/2011 12:25,complete re-write of question,
+8687577,1,10804442,Comment,1124186,12/31/2011 13:03,notify community of edit,
+8687577,1,10805414,Comment,1124186,12/31/2011 14:59,comment by asker stating they fixed the issue,
+8687577,1,10898717,Comment,135133,1/5/2012 19:15,3rd person asks question asker to post solution as answer,
+8762687,2,19759859,InitialBody,582278,1/6/2012 18:34,N/A,N/A
+,,,,,,,
+,,,,,,4 comments and one edit on question before first (and final) answer,
+,,,,,,comment to notify others of edit,

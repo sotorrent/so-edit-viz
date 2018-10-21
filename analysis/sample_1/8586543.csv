@@ -1,13 +1,20 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-8586543,1,19307059,InitialTitle,148668,"2011-12-21 07:51:08"
-8586543,1,19307058,InitialBody,148668,"2011-12-21 07:51:08"
-8586543,1,10651114,Comment,524368,"2011-12-21 09:35:10"
-8586543,1,19316222,BodyEdit,148668,"2011-12-21 13:05:07"
-8586543,1,10654782,Comment,148668,"2011-12-21 13:06:07"
-8586543,1,10654814,Comment,743214,"2011-12-21 13:08:25"
-8591674,2,19319868,InitialBody,524368,"2011-12-21 14:48:45"
-8586543,1,10660952,Comment,734069,"2011-12-21 17:53:29"
-8591674,2,10661004,Comment,734069,"2011-12-21 17:55:57"
-8586543,1,10662541,Comment,148668,"2011-12-21 19:20:46"
-8591674,2,19330390,BodyEdit,524368,"2011-12-21 20:10:01"
-8586543,1,19330575,BodyEdit,44729,"2011-12-21 20:14:35"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+8586543,1,19307059,InitialTitle,148668,12/21/2011 7:51,N/A,N/A
+8586543,1,19307058,InitialBody,148668,12/21/2011 7:51,N/A,N/A
+8586543,1,10651114,Comment,524368,12/21/2011 9:35,asking for more detail,
+8586543,1,19316222,BodyEdit,148668,12/21/2011 13:05,fixed problem in question and provided details asked for in comment,
+8586543,1,10654782,Comment,148668,12/21/2011 13:06,explanation of edit,
+8586543,1,10654814,Comment,743214,12/21/2011 13:08,3rd person suggests to post comment as answer,
+8591674,2,19319868,InitialBody,524368,12/21/2011 14:48,N/A,N/A
+8586543,1,10660952,Comment,734069,12/21/2011 17:53,curiosity question,
+8591674,2,10661004,Comment,734069,12/21/2011 17:55,comment saying that wiki page referred to in question has been fixed,
+8586543,1,10662541,Comment,148668,12/21/2011 19:20,response to curiosity question,
+8591674,2,19330390,BodyEdit,524368,12/21/2011 20:10,update to answer to reflect new state of wiki page,
+8586543,1,19330575,BodyEdit,44729,12/21/2011 20:14,update wiki link in question,
+,,,,,,,
+,,,,,,edit-comment-comment on question within minutes,
+,,,,,,comment on question and answer within minutes,
+,,,,,,edits on answer and question within minutes,
+,,,,,,all activity within on day,
+,,,,,,explanation of edit in comment,
+,,,,,,made changes to wikipedia in the process,
