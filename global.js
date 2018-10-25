@@ -36,12 +36,28 @@ function retrieveQuestionId(data) {
     return data.find(function(row) {return row.PostTypeId === 1;}).PostId;
 }
 
-function extractDateAndTimeString(date) {
-    return date.toISOString().split(".000Z")[0].replace("T", " ");
+function extractDateAndTimeString(dateString) {
+    var ISOString;
+    try {
+        // "yyyy-MM-dd" is not supported in iOS (https://stackoverflow.com/a/4310986/1974143)
+        ISOString = new Date(dateString.replace(new RegExp("-", "g"), "/")).toISOString();
+        return ISOString.split(".000Z")[0].replace("T", " ");
+    }
+    catch(err) {
+        return "";
+    }
 }
 
-function extractDateString(date) {
-    return date.toISOString().split(".000Z")[0].split("T")[0];
+function extractDateString(dateString) {
+    var ISOString;
+    try {
+        // "yyyy-MM-dd" is not supported in iOS (https://stackoverflow.com/a/4310986/1974143)
+        ISOString = new Date(dateString.replace(new RegExp("-", "g"), "/")).toISOString();
+        return ISOString.split(".000Z")[0].split("T")[0];
+    }
+    catch(err) {
+        return "";
+    }
 }
 
 function getBeginningOfPreviousDay(date) {
