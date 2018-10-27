@@ -1,9 +1,11 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-18996869,1,47971532,InitialBody,2813545,"2013-09-25 05:25:04"
-18996869,1,47971533,InitialTitle,2813545,"2013-09-25 05:25:04"
-18996869,1,47971731,TitleEdit,107625,"2013-09-25 05:30:02"
-18996869,1,28064280,Comment,1342984,"2013-09-25 05:32:08"
-18996981,2,47971871,InitialBody,249933,"2013-09-25 05:33:32"
-18996869,1,28064323,Comment,2813545,"2013-09-25 05:35:09"
-18996981,2,28064384,Comment,2813545,"2013-09-25 05:38:43"
-18996869,1,48016978,BodyEdit,2813545,"2013-09-25 16:10:55"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+18996869,1,47971532,InitialBody,2813545,9/25/2013 5:25,N/A,
+18996869,1,47971533,InitialTitle,2813545,9/25/2013 5:25,N/A,
+18996869,1,47971731,TitleEdit,107625,9/25/2013 5:30,moderator removed programming language from title,
+18996869,1,28064280,Comment,1342984,9/25/2013 5:32,don’t-expect-others-to-do-your-work comment,
+18996981,2,47971871,InitialBody,249933,9/25/2013 5:33,N/A,
+18996869,1,28064323,Comment,2813545,9/25/2013 5:35,question asker explaining they don't want others to do their work for them,
+18996981,2,28064384,Comment,2813545,9/25/2013 5:38,thank you note,
+18996869,1,48016978,BodyEdit,2813545,9/25/2013 16:10,"removed code from question, unclear why?",
+,,,,,,,
+,,,,,,"1 title edit, 3 comments on question and answer within 13 minutes",

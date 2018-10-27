@@ -1,24 +1,30 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-13864443,1,33158318,InitialTitle,1346519,"2012-12-13 16:43:04"
-13864443,1,33158317,InitialBody,1346519,"2012-12-13 16:43:04"
-13864443,1,33159286,BodyEdit,1346519,"2012-12-13 17:03:11"
-13864443,1,33186115,BodyEdit,1346519,"2012-12-14 08:04:41"
-13874826,2,33186233,InitialBody,171061,"2012-12-14 08:08:40"
-13874826,2,19109063,Comment,1346519,"2012-12-14 08:14:59"
-13874826,2,19110828,Comment,378185,"2012-12-14 09:30:52"
-13874826,2,19111113,Comment,1346519,"2012-12-14 09:41:05"
-13864443,1,19116147,Comment,968878,"2012-12-14 12:53:25"
-13874826,2,19123664,Comment,171061,"2012-12-14 17:26:32"
-13884208,2,33211794,InitialBody,244191,"2012-12-14 18:19:53"
-13884208,2,19126674,Comment,1346519,"2012-12-14 19:35:51"
-13874826,2,19126813,Comment,1346519,"2012-12-14 19:42:11"
-13864443,1,33214849,BodyEdit,1346519,"2012-12-14 19:48:59"
-13864443,1,33215124,BodyEdit,1346519,"2012-12-14 19:57:23"
-17366037,2,42883743,InitialBody,377320,"2013-06-28 13:39:25"
-17439702,2,43091432,InitialBody,208581,"2013-07-03 04:30:13"
-17439702,2,25336415,Comment,1346519,"2013-07-03 06:29:17"
-17366037,2,55595151,BodyEdit,377320,"2014-01-14 09:35:19"
-17366037,2,55595596,BodyEdit,377320,"2014-01-14 09:41:57"
-17439702,2,31760327,Comment,377320,"2014-01-14 09:44:23"
-17366037,2,31760924,Comment,1346519,"2014-01-14 10:01:46"
-13864443,1,146613267,BodyEdit,-1,"2017-05-23 11:53:38"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+13864443,1,33158318,InitialTitle,1346519,12/13/2012 16:43,N/A,
+13864443,1,33158317,InitialBody,1346519,12/13/2012 16:43,N/A,
+13864443,1,33159286,BodyEdit,1346519,12/13/2012 17:03,add additional detail,
+13864443,1,33186115,BodyEdit,1346519,12/14/2012 8:04,add additional detail,
+13874826,2,33186233,InitialBody,171061,12/14/2012 8:08,N/A,
+13874826,2,19109063,Comment,1346519,12/14/2012 8:14,clarification question on answer by asker,
+13874826,2,19110828,Comment,378185,12/14/2012 9:30,answer by 3rd person on clarification question in previous comment,
+13874826,2,19111113,Comment,1346519,12/14/2012 9:41,providing additional detail by asker,
+13864443,1,19116147,Comment,968878,12/14/2012 12:53,gut-feeling answer in comment on question,
+13874826,2,19123664,Comment,171061,12/14/2012 17:26,response to asker questions by answerer,
+13884208,2,33211794,InitialBody,244191,12/14/2012 18:19,N/A,
+13884208,2,19126674,Comment,1346519,12/14/2012 19:35,asker clarifying their needs in comment on answer,
+13874826,2,19126813,Comment,1346519,12/14/2012 19:42,asker appreciating clarifying comment by answerer on answer,
+13864443,1,33214849,BodyEdit,1346519,12/14/2012 19:48,add additional detail,
+13864443,1,33215124,BodyEdit,1346519,12/14/2012 19:57,add additional detail,
+17366037,2,42883743,InitialBody,377320,6/28/2013 13:39,N/A,
+17439702,2,43091432,InitialBody,208581,7/3/2013 4:30,N/A,
+17439702,2,25336415,Comment,1346519,7/3/2013 6:29,clarification on answer by asker,
+17366037,2,55595151,BodyEdit,377320,1/14/2014 9:35,answerer augments answer based on discussion belonging to a different answer,
+17366037,2,55595596,BodyEdit,377320,1/14/2014 9:41,answerer augments answer based on discussion belonging to a different answer,
+17439702,2,31760327,Comment,377320,1/14/2014 9:44,thank you note from 3rd person,
+17366037,2,31760924,Comment,1346519,1/14/2014 10:01,reference to a different answer added by asker,
+13864443,1,146613267,BodyEdit,-1,5/23/2017 11:53,community edit to change link format,
+,,,,,,,
+,,,,,,answer shortly after (second) question edit,
+,,,,,,two edits on question shortly after comments on two answers,
+,,,,,,two edits on answer and one comment close to each other,
+,,,,,,answer prompted by edit,
+,,,,,,answerer augments answer based on discussion belonging to a different answer,

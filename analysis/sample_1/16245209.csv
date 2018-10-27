@@ -1,14 +1,17 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-16245209,1,39767980,InitialBody,1907509,"2013-04-26 21:04:49"
-16245209,1,39767981,InitialTitle,1907509,"2013-04-26 21:04:49"
-16245209,1,23241882,Comment,1907509,"2013-04-26 21:06:33"
-16245209,1,23241962,Comment,2302167,"2013-04-26 21:09:59"
-16245275,2,39768171,InitialBody,2221176,"2013-04-26 21:10:35"
-16245209,1,23241990,Comment,2219831,"2013-04-26 21:10:38"
-16245275,2,23242030,Comment,1907509,"2013-04-26 21:12:25"
-16245209,1,23242319,Comment,2323527,"2013-04-26 21:12:57"
-16245275,2,23242123,Comment,1907509,"2013-04-26 21:16:01"
-16245209,1,23242148,Comment,1907509,"2013-04-26 21:16:55"
-16245209,1,39768477,BodyEdit,2219831,"2013-04-26 21:20:21"
-16245275,2,23242640,Comment,1907509,"2013-04-26 21:37:56"
-16245275,2,23250148,Comment,2221176,"2013-04-27 09:01:43"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+16245209,1,39767980,InitialBody,1907509,4/26/2013 21:04,N/A,
+16245209,1,39767981,InitialTitle,1907509,4/26/2013 21:04,N/A,
+16245209,1,23241882,Comment,1907509,4/26/2013 21:06,clarification on question by asker,
+16245209,1,23241962,Comment,2302167,4/26/2013 21:09,request for more detail,
+16245275,2,39768171,InitialBody,2221176,4/26/2013 21:10,N/A,
+16245209,1,23241990,Comment,2219831,4/26/2013 21:10,same request for more detail,
+16245275,2,23242030,Comment,1907509,4/26/2013 21:12,asker provides more detail,
+16245209,1,23242319,Comment,2323527,4/26/2013 21:12,suggestion and request for more detail,
+16245275,2,23242123,Comment,1907509,4/26/2013 21:16,"asker added more code in comment to answer, later added to question itself",
+16245209,1,23242148,Comment,1907509,4/26/2013 21:16,"asker added more code in comment to answer, later added to question itself",
+16245209,1,39768477,BodyEdit,2219831,4/26/2013 21:20,added more code to question,
+16245275,2,23242640,Comment,1907509,4/26/2013 21:37,additional question by asker in answer comment,
+16245275,2,23250148,Comment,2221176,4/27/2013 9:01,answer to previous question by asker in answer comment by answerer,
+,,,,,,,
+,,,,,,8 comments plus one edit on question and one answer within 33 minutes,
+,,,,,,asker adds same code in comment to two answers and in question,

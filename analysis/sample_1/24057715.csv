@@ -1,7 +1,10 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-24057715,1,66655337,InitialBody,1469208,"2014-06-05 10:27:09"
-24057715,1,66655338,InitialTitle,1469208,"2014-06-05 10:27:09"
-24057715,1,37094474,Comment,693806,"2014-06-05 10:32:02"
-24057715,1,37095907,Comment,1469208,"2014-06-05 11:10:48"
-24057715,1,66658966,BodyEdit,1469208,"2014-06-05 11:12:20"
-24058935,2,66659898,InitialBody,693806,"2014-06-05 11:24:33"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+24057715,1,66655337,InitialBody,1469208,6/5/2014 10:27,N/A,
+24057715,1,66655338,InitialTitle,1469208,6/5/2014 10:27,N/A,
+24057715,1,37094474,Comment,693806,6/5/2014 10:32,"answer in comment form, later added as answer",
+24057715,1,37095907,Comment,1469208,6/5/2014 11:10,"thank you note, requesting for comment to become answer",
+24057715,1,66658966,BodyEdit,1469208,6/5/2014 11:12,asker points out finding similar mistake elsewhere,
+24058935,2,66659898,InitialBody,693806,6/5/2014 11:24,N/A,
+,,,,,,,
+,,,,,,comment on question right after question,
+,,,,,,comment on question right before edit and answer,

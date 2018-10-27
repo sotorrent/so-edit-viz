@@ -1,9 +1,12 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-24987992,1,70246385,InitialTitle,2992738,"2014-07-28 03:18:19"
-24987992,1,70246384,InitialBody,2992738,"2014-07-28 03:18:19"
-24987992,1,38847990,Comment,3744059,"2014-07-28 03:22:41"
-24987992,1,70246819,BodyEdit,2992738,"2014-07-28 03:36:50"
-24987992,1,38848182,Comment,2992738,"2014-07-28 03:39:44"
-24987992,1,70248430,BodyEdit,2992738,"2014-07-28 04:36:04"
-25012424,2,70338537,InitialBody,1292848,"2014-07-29 09:46:18"
-25012424,2,38924188,Comment,2992738,"2014-07-30 03:46:24"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+24987992,1,70246385,InitialTitle,2992738,7/28/2014 3:18,N/A,
+24987992,1,70246384,InitialBody,2992738,7/28/2014 3:18,N/A,
+24987992,1,38847990,Comment,3744059,7/28/2014 3:22,request for additional detail,
+24987992,1,70246819,BodyEdit,2992738,7/28/2014 3:36,add requested detail,
+24987992,1,38848182,Comment,2992738,7/28/2014 3:39,comment explaining edit,
+24987992,1,70248430,BodyEdit,2992738,7/28/2014 4:36,fixed typo in previous edit,
+25012424,2,70338537,InitialBody,1292848,7/29/2014 9:46,N/A,
+25012424,2,38924188,Comment,2992738,7/30/2014 3:46,thank you note,
+,,,,,,,
+,,,,,,2 comments and 2 edits on question within 1.5 hours,
+,,,,,,comment explaining edit,

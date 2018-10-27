@@ -1,11 +1,15 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-20849332,1,54632961,InitialTitle,1476269,"2013-12-30 23:31:16"
-20849332,1,54632960,InitialBody,1476269,"2013-12-30 23:31:16"
-20849332,1,31275150,Comment,1118321,"2013-12-30 23:33:57"
-20849332,1,54633467,BodyEdit,1476269,"2013-12-30 23:43:47"
-20849332,1,31275407,Comment,1476269,"2013-12-30 23:46:08"
-20849332,1,31275501,Comment,1118321,"2013-12-30 23:52:28"
-20849332,1,31275623,Comment,1476269,"2013-12-30 23:59:47"
-20849332,1,54634337,BodyEdit,1476269,"2013-12-31 00:08:28"
-20849332,1,31275900,Comment,1476269,"2013-12-31 00:13:56"
-20849890,2,54635050,InitialBody,1476269,"2013-12-31 00:32:13"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+20849332,1,54632961,InitialTitle,1476269,12/30/2013 23:31,N/A,
+20849332,1,54632960,InitialBody,1476269,12/30/2013 23:31,N/A,
+20849332,1,31275150,Comment,1118321,12/30/2013 23:33,clarification question,
+20849332,1,54633467,BodyEdit,1476269,12/30/2013 23:43,provide more details,
+20849332,1,31275407,Comment,1476269,12/30/2013 23:46,comment explaining additional details added in response to comment,
+20849332,1,31275501,Comment,1118321,12/30/2013 23:52,speculation what the problem could be,
+20849332,1,31275623,Comment,1476269,12/30/2013 23:59,announcing edit,
+20849332,1,54634337,BodyEdit,1476269,12/31/2013 0:08,provide more details,
+20849332,1,31275900,Comment,1476269,12/31/2013 0:13,further question from asker,
+20849890,2,54635050,InitialBody,1476269,12/31/2013 0:32,N/A,
+,,,,,,,
+,,,,,,5 comments and 2 edits on question alone within 42 minutes,
+,,,,,,comment explaining additional details added in response to comment,
+,,,,,,announcing edit,

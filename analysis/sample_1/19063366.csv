@@ -1,12 +1,17 @@
-PostId,PostTypeId,EventId,Event,UserId,CreationDate
-19063366,1,48203027,InitialBody,819916,"2013-09-28 04:42:28"
-19063366,1,48203028,InitialTitle,819916,"2013-09-28 04:42:28"
-19063604,2,48203830,InitialBody,1652451,"2013-09-28 05:19:43"
-19063740,2,48204359,InitialBody,2078148,"2013-09-28 05:44:31"
-19064171,2,48205830,InitialBody,1868262,"2013-09-28 06:43:12"
-19063366,1,28178113,Comment,207421,"2013-09-28 07:45:06"
-19064171,2,28178137,Comment,207421,"2013-09-28 07:47:05"
-19063740,2,28178514,Comment,207421,"2013-09-28 08:17:44"
-19063366,1,28178634,Comment,819916,"2013-09-28 08:28:57"
-19063740,2,48301992,BodyEdit,2078148,"2013-09-30 07:59:24"
-19063740,2,28220155,Comment,2078148,"2013-09-30 08:00:53"
+PostId,PostTypeId,EventId,Event,UserId,CreationDate,Rationale (CT),Rationale (SB)
+19063366,1,48203027,InitialBody,819916,9/28/2013 4:42,N/A,
+19063366,1,48203028,InitialTitle,819916,9/28/2013 4:42,N/A,
+19063604,2,48203830,InitialBody,1652451,9/28/2013 5:19,N/A,
+19063740,2,48204359,InitialBody,2078148,9/28/2013 5:44,N/A,
+19064171,2,48205830,InitialBody,1868262,9/28/2013 6:43,N/A,
+19063366,1,28178113,Comment,207421,9/28/2013 7:45,comment about detail on question,
+19064171,2,28178137,Comment,207421,9/28/2013 7:47,pointing out answer is incorrect,
+19063740,2,28178514,Comment,207421,9/28/2013 8:17,pointing out answer is incorrect/insufficient,
+19063366,1,28178634,Comment,819916,9/28/2013 8:28,thank you note,
+19063740,2,48301992,BodyEdit,2078148,9/30/2013 7:59,changes to answer based on comment,
+19063740,2,28220155,Comment,2078148,9/30/2013 8:00,explained that answer was edited,
+,,,,,,,
+,,,,,,comments on question and all answers within minutes,
+,,,,,,answer edit immediately followed by answer comment,
+,,,,,,3rd person pointing out why answers are bad,
+,,,,,,answerer explained that answer was edited in response to comment,
