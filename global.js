@@ -22,7 +22,8 @@ function readCSV(postId,  callback) {
             EventId: parseInt(row.EventId),
             Event: row.Event,
             UserId: parseInt(row.UserId),
-            CreationDate: new Date(row.CreationDate.replace(" ", "T") + "Z") // make date ISO-8601-compatible
+            CreationDateString: row.CreationDate.replace(" ", "T") + "Z", // make date ISO-8601-compatible
+            CreationDate: new Date(row.CreationDate.replace(" ", "T") + "Z")
         }
     }).then(function (data) {
         data = data
@@ -36,43 +37,77 @@ function retrieveQuestionId(data) {
     return data.find(function(row) {return row.PostTypeId === 1;}).PostId;
 }
 
-function extractDateAndTimeString(dateString) {
+function getISOString(dateString) {
     var ISOString;
     try {
-        // "yyyy-MM-dd" is not supported in iOS (https://stackoverflow.com/a/4310986/1974143)
-        ISOString = new Date(dateString.replace(new RegExp("-", "g"), "/")).toISOString();
-        return ISOString.split(".000Z")[0].replace("T", " ");
+        ISOString = new Date(dateString).toISOString();
+
     }
     catch(err) {
+        try {
+            // "yyyy-MM-dd" is not supported in iOS (https://stackoverflow.com/a/4310986/1974143)
+            ISOString = new Date(dateString.replace(new RegExp("-", "g"), "/"));
+        }
+        catch(err) { }
+    }
+
+    return ISOString;
+}
+
+function extractDateAndTimeString(dateString) {
+    var ISOString = getISOString(dateString);
+    if (ISOString) {
+        return ISOString.split(".000Z")[0].replace("T", " ");
+    } else {
         return "";
     }
 }
 
 function extractDateString(dateString) {
-    var ISOString;
-    try {
-        // "yyyy-MM-dd" is not supported in iOS (https://stackoverflow.com/a/4310986/1974143)
-        ISOString = new Date(dateString.replace(new RegExp("-", "g"), "/")).toISOString();
+    var ISOString = getISOString(dateString);
+    if (ISOString) {
         return ISOString.split(".000Z")[0].split("T")[0];
-    }
-    catch(err) {
+    } else {
         return "";
     }
 }
 
-function getBeginningOfPreviousDay(date) {
-    var previousDay = new Date(extractDateString(date) + "T12:00:00Z");
+function getTimestampsDate(dateString) {
+    return new Date(dateString).toISOString().split("T")[0];
+}
+
+function retrieveTimestampsDate(data) {
+    return data.map(function(row) { return getTimestampsDate(row.CreationDateString); });
+}
+
+function getTimestampsDateAndTime(dateString) {
+    var ISOString = getISOString(dateString);
+    if (ISOString) {
+        var timestamp = ISOString.split("T");
+        var time = timestamp[1].split(".")[0].split(":");
+        return timestamp[0] + " " + time[0] + ":" + time[1];
+    } else {
+        return "";
+    }
+}
+
+function retrieveTimestampsDateAndTime(data) {
+    return data.map(function(row) { return getTimestampsDateAndTime(row.CreationDateString); });
+}
+
+function getBeginningOfPreviousDay(dateString) {
+    var previousDay = extractDateString(dateString) + "T12:00:00Z";
     previousDay.setDate(previousDay.getDate()-1); // see https://stackoverflow.com/a/5960713
     previousDay.setUTCHours(0, 0, 1);
     return previousDay;
 }
 
-function getMiddleOfDay(date) {
-    return new Date(extractDateString(date) + "T12:00:00Z");
+function getMiddleOfDay(dateString) {
+    return extractDateString(dateString) + "T12:00:00Z";
 }
 
-function getEndOfNextDay(date) {
-    var nextDay = new Date(extractDateString(date) + "T12:00:00Z");
+function getEndOfNextDay(dateString) {
+    var nextDay = extractDateString(dateString) + "T12:00:00Z";
     nextDay.setDate(nextDay.getDate()+1); // see https://stackoverflow.com/a/5960713
     nextDay.setUTCHours(23, 59, 59);
     return nextDay;
@@ -81,24 +116,6 @@ function getEndOfNextDay(date) {
 // see https://stackoverflow.com/a/14438954
 function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
-}
-
-function getTimestampsDate(date) {
-    return date.toISOString().split("T")[0];
-}
-
-function retrieveTimestampsDate(data) {
-    return data.map(function(row) { return getTimestampsDate(row.CreationDate); });
-}
-
-function getTimestampsDateAndTime(date) {
-    var timestamp = date.toISOString().split("T");
-    var time = timestamp[1].split(".")[0].split(":");
-    return timestamp[0] + " " + time[0] + ":" + time[1];
-}
-
-function retrieveTimestampsDateAndTime(data) {
-    return data.map(function(row) { return getTimestampsDateAndTime(row.CreationDate); });
 }
 
 function getCommentUrl(questionId, commentId, postId) {
@@ -121,6 +138,7 @@ function retrievePosts(data) {
             PostId: row.PostId,
             PostTypeId: row.PostTypeId,
             OwnerId: row.UserId,
+            CreationDateString: row.CreationDateString,
             CreationDate: row.CreationDate
         }})
         .forEach(function(post, index) {
@@ -164,7 +182,7 @@ function getCoordinatesDiscrete(data, posts) {
 function getCoordinatesContinuous(data, posts, timestamps) {
     var coordinates = [];
     data.forEach(function(row) {
-        var timestamp = getTimestampsDateAndTime(row.CreationDate);
+        var timestamp = getTimestampsDateAndTime(row.CreationDateString);
         var xPos = timestamps.indexOf(timestamp);
         if (xPos === -1) {
             errorMessage("Date not found.");

@@ -81,7 +81,7 @@
             data = data.filter(
                 function(row) {
                     return row.CreationDate.getTime() >= minTimestamp
-                        && row.CreationDate <= maxTimestamp;
+                        && row.CreationDate.getTime() <= maxTimestamp;
                 }
             );
 
@@ -89,12 +89,12 @@
             var filteredPostIds = data.map(function(event) { return event.PostId; }).filter(onlyUnique);
 
             // retrieve timestamps for x axis
-            minTimestamp = data[0].CreationDate;
-            maxTimestamp = data[data.length-1].CreationDate;
+            minTimestamp = data[0].CreationDate.getTime();
+            maxTimestamp = data[data.length-1].CreationDate.getTime();
 
             var timestamps = [];
-            for (var i = minTimestamp.getTime()-minute; i <= maxTimestamp.getTime()+minute; i+=minute) {
-                timestamps.push(getTimestampsDateAndTime(new Date(i)));
+            for (var i = minTimestamp-minute; i <= maxTimestamp+minute; i+=minute) {
+                timestamps.push(getTimestampsDateAndTime(i));
             }
 
             // configure svg element
