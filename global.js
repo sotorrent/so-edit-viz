@@ -46,7 +46,7 @@ function getISOString(dateString) {
     catch(err) {
         try {
             // "yyyy-MM-dd" is not supported in iOS (https://stackoverflow.com/a/4310986/1974143)
-            ISOString = new Date(dateString.replace(new RegExp("-", "g"), "/"));
+            ISOString = new Date(dateString.replace(new RegExp("-", "g"), "/")).toISOString();
         }
         catch(err) { }
     }
