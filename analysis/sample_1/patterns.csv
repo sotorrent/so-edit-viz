@@ -1,0 +1,46 @@
+thread id,comment,code
+376732,"question, answer, comment on question, edit on question shortly after one another in beginning to provide detail",burst
+376732,edit-comment pair on answer,burst
+376732,2 comments on answer shortly after one another to indicate that answer is better than accepted answer,burst
+376732,fix flaw in answer in response to comment,comment triggering edit
+376732,edit to fix issue reported in comment,comment triggering edit
+3529744,two comment pairs within minutes,burst
+3529744,edit-comment-comment-edit-comment on question,burst
+3529744,comment-edit on answer,comment triggering edit
+3529744,bring answerer's attention to edit in question,explanation of edit in comment
+3529744,comments to make readers aware of edit,explanation of edit in comment
+3529744,question asker copied their clarification comment into question,overlap of comment and edit
+3529744,overlap of comment and edit,overlap of comment and edit
+7953840,2 title edits and one post edit close to each other,burst
+7953840,comment on answer followed by edit to question (twice),comment triggering edit
+8586543,edit-comment-comment on question within minutes,burst
+8586543,comment on question and answer within minutes,burst
+8586543,edits on answer and question within minutes,burst
+8586543,all activity within on day,burst
+8586543,explanation of edit in comment,explanation of edit in comment
+8687577,comment to notify others of edit,explanation of edit in comment
+9225307,all activity in less than 2 hours,burst
+9225307,four comments on answer within minutes,burst
+11252831,at least 2 comments on question and two answers all within minutes,burst
+11719084,"2 comments on question right after posting, one comment on answer right after posting",burst
+11719084,3 comments on answer very close to each other,burst
+11767607,"2 edits, 7 comments within 19 minutes",burst
+13864443,two edits on question shortly after comments on two answers,burst
+13864443,two edits on answer and one comment close to each other,burst
+13864443,answerer augments answer based on discussion belonging to a different answer,comment triggering edit
+13864443,answer shortly after (second) question edit,edit prompting answer
+13864443,answer prompted by edit,edit prompting answer
+16245209,8 comments plus one edit on question and one answer within 33 minutes,burst
+16245209,asker adds same code in comment to two answers and in question,overlap of comment and edit
+17591278,announcing edit,announcing edit
+17591278,two comments within less than 20 minutes on answer,burst
+18996869,"1 title edit, 3 comments on question and answer within 13 minutes",burst
+19063366,comments on question and all answers within minutes,burst
+19063366,answer edit immediately followed by answer comment,burst
+19063366,answerer explained that answer was edited in response to comment,explanation of edit in comment
+20849332,announcing edit,announcing edit
+20849332,5 comments and 2 edits on question alone within 42 minutes,burst
+24057715,comment on question right after question,burst
+24057715,comment on question right before edit and answer,edit prompting answer
+24987992,2 comments and 2 edits on question within 1.5 hours,burst
+24987992,comment explaining edit,explanation of edit in comment
